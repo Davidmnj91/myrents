@@ -10,6 +10,7 @@ import (
 type Incident struct {
 	ID  primitive.ObjectID `bson:"_id,omitempty" json:"id"`
 	Agreement primitive.ObjectID `bson:"agreementid,omitempty" json:"agreement"`
+	RefurbishmentCompany primitive.ObjectID `bson:"refurbishmentcompanyid,omitempty" json:"refurbishment_company"`
 	Title string `bson:"title,omitempty" json:"title"`
 	Description string `bson:"description,omitempty" json:"description"`
 	StartDate time.Time `bson:"start_date,omitempty" json:"start_date"`

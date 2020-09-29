@@ -12,6 +12,7 @@ type Bill struct {
 	Agreement primitive.ObjectID `bson:"agreementid,omitempty" json:"agreement"`
 	Amount float32 `bson:"amount,omitempty" json:"amount"`
 	Paid bool `bson:"paid,omitempty" json:"paid"`
+	Type string `bson:"type,omitproperty" json:"type"`
 	Date time.Time `bson:"date,omitempty" json:"date"`
 	Receipt file.File `bson:"receipt,omitempty" json:"receipt"`
 	CreatedAt time.Time `bson:"created_at,omitempty" json:"created_at"`

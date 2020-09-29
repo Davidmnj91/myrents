@@ -30,7 +30,7 @@ type RealState struct {
 	ZipCode string `bson:"zip_code,omitempty" json:"zip_code"`
 	Province string `bson:"province,omitempty" json:"province"`
 	Country string `bson:"country,omitempty" json:"country"`
-	Gateway int `bson:"gateway,omitempty" json:"gateway"`
+	Gateway string `bson:"gateway,omitempty" json:"gateway"`
 	Door string `bson:"door,omitempty" json:"door"`
 	Area float32 `bson:"area,omitempty" json:"area"`
 	Landlord primitive.ObjectID `bson:"userid,omitempty" json:"landlord"`

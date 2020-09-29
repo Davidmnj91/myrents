@@ -12,7 +12,7 @@ const dbURI string = "mongodb://myrent:myrent123@127.0.0.1:27017/"
 const dbName string = "myrent"
 
 /*Db points to the active mongo db */
-var Db *mongo.Database
+var db *mongo.Database
 var client *mongo.Client
 
 /*Connect try to stablish a connection to the mongo db, if successfully returns the db connection*/
@@ -22,7 +22,6 @@ func Connect() (*mongo.Database, error) {
 	defer cancel()
 
 	client, err := mongo.Connect(ctx, clientOptions)
-	defer Disconnect()
 
 	if err != nil {
 		return nil, err
@@ -32,9 +31,9 @@ func Connect() (*mongo.Database, error) {
 		return nil, err
 	}
 
-	Db = client.Database(dbName)
+	db = client.Database(dbName)
 
-	return Db, nil
+	return db, nil
 }
 
 /*Disconnect an active mongo client*/

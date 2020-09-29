@@ -8,6 +8,8 @@ import (
 /*UserAccount struct representation of an user in the system*/
 type UserAccount struct {
 	ID  primitive.ObjectID `bson:"_id,omitempty" json:"id"`
+	Username string `bson:"username,omitempty" json:"username"`
+	Password string `bson:"password,omitempty" json:"password"`
 	Name string `bson:"name,omitempty" json:"name"`
 	Surname string `bson:"surname,omitempty" json:"surname"`
 	IDNumber string `bson:"id_number,omitempty" json:"id_number"`

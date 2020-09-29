@@ -1,29 +1,25 @@
 package api
 
 import (
-	"os"
+	"log"
 	"net/http"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 )
 
 /*Router to handle requests in the backend*/
-var Router *mux.Router
+var router *mux.Router
 
 /*StartRouter setup an HTTP server in the configured port and api base path*/
 func StartRouter() *mux.Router {
-	Router = mux.NewRouter()
+	router = mux.NewRouter()
 
-	PORT := os.Getenv("PORT")
-	if PORT == "" {
-		PORT = "8080"
-	}
+	router.Use(loggingMiddleware)
 
-	handler:= setupCors(Router)
+	handler:= setupCors(router)
+	router.Handle("/", handler)
 
-	http.ListenAndServe(":"+PORT, handler)
-
-	return Router
+	return router
 }
 
 func setupCors(router *mux.Router) http.Handler {
@@ -31,9 +27,16 @@ func setupCors(router *mux.Router) http.Handler {
 		AllowedOrigins: []string{"http://localhost:4200"},
 		AllowCredentials: true,
 	}
-  cors:= cors.New(corsOptions)
+	cors:= cors.New(corsOptions)
 
-  handler := cors.Handler(router)
+	handler := cors.Handler(router)
 
-  return handler
+  	return handler
+}
+
+func loggingMiddleware(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        log.Println(r.RequestURI)
+        next.ServeHTTP(w, r)
+    })
 }
