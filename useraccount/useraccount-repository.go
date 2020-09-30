@@ -8,18 +8,22 @@ import (
 const userAccountCollection = "useraccount"
 
 func newUserAccountRepo(db *mongo.Database) Repo {
-	return Repo{db}
+	return &MongoRepo{db}
 }
 
-/*Repo struct to bypass repositories*/
-type Repo struct {
+type Repo interface {
+	Create(context.Context, *UserAccount)(interface{}, error)
+}
+
+/*MongoRepo struct to bypass repositories*/
+type MongoRepo struct {
 	db *mongo.Database
 }
 
 /*Create a user in the database*/
-func (ur *Repo) Create(ctx context.Context, u *UserAccount) (*mongo.InsertOneResult, error) {
+func (ur *MongoRepo) Create(ctx context.Context, u *UserAccount) (interface{}, error) {
 	userAccountCollection := ur.db.Collection(userAccountCollection)
 	res, err := userAccountCollection.InsertOne(ctx, u)
 
-	return res, err
+	return res.InsertedID, err
 }
