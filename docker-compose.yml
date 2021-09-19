@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+  redis:
+    image: redis
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    ports:
+      - "6379:6379"
+    volumes:
+      - myrent-cache:/var/lib/redis/data
+      - myrent-cache-conf:/usr/local/etc/redis/redis.conf
+
+  mongodb:
+    image: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_DATABASE: myRents
+    volumes:
+      - myrent-db:/data/db
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - "9000:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_USER}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_PASSWORD}
+      ME_CONFIG_MONGODB_SERVER: mongodb
+    depends_on: 
+      - mongodb
+    links:
+      - mongodb
+
+volumes:
+  myrent-db:
+  myrent-cache:
+  myrent-cache-conf:
