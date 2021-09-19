@@ -1,0 +1,115 @@
+basePath: /api
+consumes:
+- application/json
+host: localhost:5000
+info:
+  description: Documentation of our MyRents API.
+  title: MyRents.
+  version: 1.0.0
+paths:
+  /account:
+    delete:
+      operationId: remove-account
+      responses:
+        "200":
+          description: Successful delete
+        "500":
+          description: Internal server error
+      summary: Deletes an existing account on the system.
+      tags:
+      - user
+  /login:
+    post:
+      operationId: login
+      parameters:
+      - description: The username to login
+        in: body
+        name: username
+        required: true
+        schema:
+          type: string
+        x-go-name: Username
+      - description: The password to login
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+        x-go-name: Password
+      responses:
+        "200":
+          description: Successful login, bearer token in "authorization" header
+        "500":
+          description: Internal server error
+      summary: Logs in a user account into the system.
+      tags:
+      - auth
+  /logout:
+    delete:
+      operationId: logout
+      responses:
+        "200":
+          description: Successful logout
+        "500":
+          description: Internal server error
+      summary: Logs out a user account from the system.
+      tags:
+      - auth
+  /register:
+    post:
+      operationId: register
+      parameters:
+      - in: body
+        name: user_name
+        schema:
+          type: string
+        x-go-name: Username
+      - in: body
+        name: password
+        schema:
+          type: string
+        x-go-name: Password
+      - in: body
+        name: name
+        schema:
+          type: string
+        x-go-name: Name
+      - in: body
+        name: surname
+        schema:
+          type: string
+        x-go-name: Surname
+      - in: body
+        name: id_number
+        schema:
+          type: string
+        x-go-name: IDNumber
+      - in: body
+        name: email
+        schema:
+          type: string
+        x-go-name: Email
+      - in: body
+        name: phone
+        schema:
+          type: string
+        x-go-name: Phone
+      - in: body
+        name: birth_date
+        schema:
+          format: date-time
+          type: string
+        x-go-name: BirthDate
+      responses:
+        "200":
+          description: Successful registration
+        "500":
+          description: Internal server error
+      summary: Creates a new user in the system.
+      tags:
+      - user
+produces:
+- application/json
+schemes:
+- http
+swagger: "2.0"
