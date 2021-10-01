@@ -2,3 +2,5 @@
 MyRents.iml
 
 .env
+
+/server/bin/

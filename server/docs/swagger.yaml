@@ -1,10 +1,72 @@
 basePath: /api
 consumes:
 - application/json
+definitions:
+  Login:
+    properties:
+      password:
+        description: The password to login
+        type: string
+        x-go-name: Password
+      username:
+        description: The username to login
+        type: string
+        x-go-name: Username
+    required:
+    - username
+    - password
+    type: object
+    x-go-package: github.com/Davidmnj91/myrents/pkg/login
+  Register:
+    properties:
+      birth_date:
+        description: The BirthDate of the user
+        format: date-time
+        type: string
+        x-go-name: BirthDate
+      email:
+        description: The Email of the user
+        type: string
+        x-go-name: Email
+      id_number:
+        description: The IDNumber of the user
+        type: string
+        x-go-name: IDNumber
+      name:
+        description: The Name of the user
+        type: string
+        x-go-name: Name
+      password:
+        description: The Password of the user
+        type: string
+        x-go-name: Password
+      phone:
+        description: The Phone of the user
+        type: string
+        x-go-name: Phone
+      surname:
+        description: The Surname of the user
+        type: string
+        x-go-name: Surname
+      user_name:
+        description: The name of the user in the app
+        type: string
+        x-go-name: Username
+    required:
+    - user_name
+    - password
+    - name
+    - surname
+    - id_number
+    - email
+    - phone
+    - birth_date
+    type: object
+    x-go-package: github.com/Davidmnj91/myrents/pkg/user_register
 host: localhost:5000
 info:
   description: Documentation of our MyRents API.
-  title: MyRents.
+  title: classification MyRents.
   version: 1.0.0
 paths:
   /account:
@@ -20,22 +82,14 @@ paths:
       - user
   /login:
     post:
-      operationId: login
+      operationId: login-user
       parameters:
-      - description: The username to login
+      - description: Body to log in a user
         in: body
-        name: username
+        name: Body
         required: true
         schema:
-          type: string
-        x-go-name: Username
-      - description: The password to login
-        in: body
-        name: password
-        required: true
-        schema:
-          type: string
-        x-go-name: Password
+          $ref: '#/definitions/Login'
       responses:
         "200":
           description: Successful login, bearer token in "authorization" header
@@ -57,49 +111,14 @@ paths:
       - auth
   /register:
     post:
-      operationId: register
+      operationId: register-user
       parameters:
-      - in: body
-        name: user_name
+      - description: Body to register a user
+        in: body
+        name: Body
+        required: true
         schema:
-          type: string
-        x-go-name: Username
-      - in: body
-        name: password
-        schema:
-          type: string
-        x-go-name: Password
-      - in: body
-        name: name
-        schema:
-          type: string
-        x-go-name: Name
-      - in: body
-        name: surname
-        schema:
-          type: string
-        x-go-name: Surname
-      - in: body
-        name: id_number
-        schema:
-          type: string
-        x-go-name: IDNumber
-      - in: body
-        name: email
-        schema:
-          type: string
-        x-go-name: Email
-      - in: body
-        name: phone
-        schema:
-          type: string
-        x-go-name: Phone
-      - in: body
-        name: birth_date
-        schema:
-          format: date-time
-          type: string
-        x-go-name: BirthDate
+          $ref: '#/definitions/Register'
       responses:
         "200":
           description: Successful registration

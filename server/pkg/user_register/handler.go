@@ -17,7 +17,7 @@ func NewHandler(service Service) Handler {
 	return &registerHandler{service}
 }
 
-// Register swagger:route POST /register user register
+// Register swagger:route POST /register user register-user
 //
 // Creates a new user in the system.
 //

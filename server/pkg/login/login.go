@@ -1,15 +1,19 @@
 package login
 
-// swagger:parameters login
+// swagger:model Login
 type Login struct {
 	// The username to login
-	//
-	// in: body
 	// required: true
 	Username string `json:"username" validate:"required"`
 	// The password to login
-	//
-	// in: body
 	// required: true
 	Password string `json:"password" validate:"required"`
+}
+
+// swagger:parameters login-user
+type _ struct {
+	// Body to log in a user
+	// in: body
+	// required: true
+	Body Login
 }

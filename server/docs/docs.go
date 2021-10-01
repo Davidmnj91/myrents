@@ -1,3 +1,4 @@
+// Package docs
 // Package classification MyRents.
 //
 // Documentation of our MyRents API.

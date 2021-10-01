@@ -17,7 +17,7 @@ func NewHandler(service Service) Handler {
 	return &loginHandler{service}
 }
 
-// Login swagger:route POST /login auth login
+// Login swagger:route POST /login auth login-user
 //
 // Logs in a user account into the system.
 //
