@@ -1,7 +1,5 @@
 package user_register
 
-import "time"
-
 // swagger:model Register
 type Register struct {
 	// The name of the user in the app
@@ -27,7 +25,7 @@ type Register struct {
 	Phone string `json:"phone" validate:"required"`
 	// The BirthDate of the user
 	// required: true
-	BirthDate time.Time `json:"birth_date" validate:"required,datetime"`
+	BirthDate string `json:"birth_date" validate:"required,datetime"`
 }
 
 // swagger:parameters register-user

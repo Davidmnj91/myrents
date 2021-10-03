@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/Davidmnj91/myrents/pkg/http/rest"
 	"github.com/Davidmnj91/myrents/pkg/jwt"
 	"github.com/Davidmnj91/myrents/pkg/login"
@@ -21,8 +22,9 @@ const (
 	defaultJWTSeed      = "MyRents"
 	defaultJWTTTLMillis = 3 * 24 * 60 * 60 * 1000 // 3 days
 
-	defaultRedisAddr = "localhost"
-	defaultRedisPass = "MyRents"
+	defaultRedisHost = "localhost"
+	defaultRedisPort = 6379
+	defaultRedisPass = "myRents"
 	defaultRedisDB   = 0
 
 	defaultDBUser   = "myRents"
@@ -30,6 +32,8 @@ const (
 	defaultDBHost   = "localhost"
 	defaultDBPort   = "27017"
 	defaultDBSchema = "myRents"
+
+	defaultApiPort = 5000
 )
 
 func main() {
@@ -39,7 +43,11 @@ func main() {
 		log.Println("WARN: Invalid argument provided for JWT_TTL configuration")
 	}
 
-	redisAddr := env.GetEnvAsStringOrFallback("REDIS_ADDR", defaultRedisAddr)
+	redisHost := env.GetEnvAsStringOrFallback("REDIS_HOST", defaultRedisHost)
+	redisPort, err := env.GetEnvAsIntOrFallback("REDIS_PORT", defaultRedisPort)
+	if err != nil {
+		log.Println("WARN: Invalid argument provided for REDIS_PORT configuration")
+	}
 	redisPass := env.GetEnvAsStringOrFallback("REDIS_PASS", defaultRedisPass)
 	redisDB, err := env.GetEnvAsIntOrFallback("REDIS_DB", defaultRedisDB)
 	if err != nil {
@@ -52,7 +60,7 @@ func main() {
 	dbPort := env.GetEnvAsStringOrFallback("DB_PORT", defaultDBPort)
 	schema := env.GetEnvAsStringOrFallback("DB_SCHEMA", defaultDBSchema)
 
-	redisClient, err := redisUtil.ConnectRedis(redisUtil.NewRedisConfiguration(redisAddr, redisPass, redisDB))
+	redisClient, err := redisUtil.ConnectRedis(redisUtil.NewRedisConfiguration(redisHost, redisPort, redisPass, redisDB))
 	if err != nil {
 		panic(err)
 	}
@@ -85,7 +93,18 @@ func main() {
 
 	router := rest.NewRouter(rest.Routes{LoginHandler: loginHandler, LogoutHandler: logoutHandler, UserRegisterHandler: userRegisterHandler, UserDeleteHandler: userDeleteHandler, AuthMiddleware: authMiddleware})
 
-	api := fiber.New()
+	apiPort, err := env.GetEnvAsIntOrFallback("API_PORT", defaultApiPort)
+	if err != nil {
+		log.Println("WARN: Invalid argument provided for API_PORT configuration")
+	}
 
+	app := fiber.New()
+
+	api := app.Group("/api")
 	router.Serve(api)
+
+	err = app.Listen(fmt.Sprintf(":%d", apiPort))
+	if err != nil {
+		panic(err)
+	}
 }

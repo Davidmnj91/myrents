@@ -1,6 +1,9 @@
 package user_register
 
-import "github.com/Davidmnj91/myrents/pkg/domain/user"
+import (
+	"github.com/Davidmnj91/myrents/pkg/domain/user"
+	"time"
+)
 
 type Mapper interface {
 	ToDomain(register Register) *user.User
@@ -8,6 +11,11 @@ type Mapper interface {
 }
 
 func ToDomain(register Register) *user.User {
+	birthDate, err := time.Parse("YYYY-MM-DD", register.BirthDate)
+	if err != nil {
+		birthDate = time.Now()
+	}
+
 	return &user.User{
 		Username:  register.Username,
 		Password:  register.Password,
@@ -16,6 +24,6 @@ func ToDomain(register Register) *user.User {
 		IDNumber:  register.IDNumber,
 		Email:     register.Email,
 		Phone:     register.Phone,
-		BirthDate: register.BirthDate,
+		BirthDate: birthDate,
 	}
 }
