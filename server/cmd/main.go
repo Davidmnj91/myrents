@@ -14,6 +14,7 @@ import (
 	mongoUtil "github.com/Davidmnj91/myrents/pkg/util/db"
 	"github.com/Davidmnj91/myrents/pkg/util/env"
 	redisUtil "github.com/Davidmnj91/myrents/pkg/util/redis"
+	"github.com/Davidmnj91/myrents/pkg/util/validation"
 	"github.com/gofiber/fiber/v2"
 	"log"
 )
@@ -54,18 +55,18 @@ func main() {
 		log.Println("WARN: Invalid argument provided for REDIS_DB configuration")
 	}
 
+	redisClient, err := redisUtil.ConnectRedis(redisUtil.NewRedisConfiguration(redisHost, redisPort, redisPass, redisDB))
+	if err != nil {
+		panic(err)
+	}
+
 	dbUser := env.GetEnvAsStringOrFallback("DB_USER", defaultDBUser)
 	dbPass := env.GetEnvAsStringOrFallback("DB_PASS", defaultDBPass)
 	dbHost := env.GetEnvAsStringOrFallback("DB_HOST", defaultDBHost)
 	dbPort := env.GetEnvAsStringOrFallback("DB_PORT", defaultDBPort)
 	schema := env.GetEnvAsStringOrFallback("DB_SCHEMA", defaultDBSchema)
 
-	redisClient, err := redisUtil.ConnectRedis(redisUtil.NewRedisConfiguration(redisHost, redisPort, redisPass, redisDB))
-	if err != nil {
-		panic(err)
-	}
-
-	collection, err := mongoUtil.ConnectMongo(mongoUtil.NewMongoConfiguration(
+	dbClient, err := mongoUtil.ConnectMongo(mongoUtil.NewMongoConfiguration(
 		dbUser,
 		dbPass,
 		dbHost,
@@ -78,17 +79,22 @@ func main() {
 		panic(err)
 	}
 
-	repo := mongo.NewRepository(collection)
+	validator, err := validation.NewValidator()
+	if err != nil {
+		panic(err)
+	}
+
+	repo := mongo.NewRepository(dbClient)
 	redisRepo := redis.NewRepository(redisClient, int64(tokenTtl))
 
 	jwtService := jwt.NewService(tokenSeed, tokenTtl)
 	authService := middleware.NewService(jwtService, redis.NewRepository(redisClient, int64(tokenTtl)))
 
 	authMiddleware := middleware.NewAuthMiddleware(authService)
-	loginHandler := login.NewLogin(repo, redisRepo, jwtService)
+	loginHandler := login.NewLogin(validator, repo, redisRepo, jwtService)
 	logoutHandler := logout.NewLogout(redisRepo)
 
-	userRegisterHandler := user_register.NewRegister(repo)
+	userRegisterHandler := user_register.NewRegister(repo, validator)
 	userDeleteHandler := user_remove.NewReMove(repo)
 
 	router := rest.NewRouter(rest.Routes{LoginHandler: loginHandler, LogoutHandler: logoutHandler, UserRegisterHandler: userRegisterHandler, UserDeleteHandler: userDeleteHandler, AuthMiddleware: authMiddleware})

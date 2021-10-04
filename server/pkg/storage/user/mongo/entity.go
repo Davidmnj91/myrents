@@ -14,7 +14,7 @@ type Person struct {
 	IDNumber  string    `json:"id_number" bson:"id_number"`
 	Email     string    `json:"email" bson:"email"`
 	Phone     string    `json:"phone" bson:"phone"`
-	BirthDate time.Time `json:"birth_date" bson:"birth_date"`
+	BirthDate string    `json:"birth_date" bson:"birth_date"`
 	CreatedAt time.Time `json:"created_at" bson:"created_at"`
 	UpdatedAt time.Time `json:"updated_at" bson:"updated_at"`
 	DeletedAt time.Time `json:"deleted_at" bson:"deleted_at"`

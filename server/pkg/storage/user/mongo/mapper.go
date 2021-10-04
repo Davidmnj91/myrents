@@ -5,6 +5,8 @@ import (
 )
 
 func ToDomain(person Person) user.User {
+	birthDate, _ := user.NewBirthDate(person.BirthDate)
+
 	return user.User{
 		Username:  person.Username,
 		Password:  person.Password,
@@ -13,14 +15,14 @@ func ToDomain(person Person) user.User {
 		IDNumber:  person.IDNumber,
 		Email:     person.Email,
 		Phone:     person.Phone,
-		BirthDate: person.BirthDate,
+		BirthDate: birthDate,
 		CreatedAt: person.CreatedAt,
 		UpdatedAt: person.UpdatedAt,
 		DeletedAt: person.DeletedAt,
 	}
 }
 
-func ToRepository(user user.User) Person {
+func ToRepository(user *user.User) Person {
 	return Person{
 		Username:  user.Username,
 		Password:  user.Password,
@@ -29,7 +31,7 @@ func ToRepository(user user.User) Person {
 		IDNumber:  user.IDNumber,
 		Email:     user.Email,
 		Phone:     user.Phone,
-		BirthDate: user.BirthDate,
+		BirthDate: user.BirthDate.Format(),
 		CreatedAt: user.CreatedAt,
 		UpdatedAt: user.UpdatedAt,
 		DeletedAt: user.DeletedAt,

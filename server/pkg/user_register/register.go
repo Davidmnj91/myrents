@@ -4,7 +4,7 @@ package user_register
 type Register struct {
 	// The name of the user in the app
 	// required: true
-	Username string `json:"user_name" validate:"required"`
+	Username string `json:"username" validate:"required"`
 	// The Password of the user
 	// required: true
 	Password string `json:"password" validate:"required"`
@@ -25,13 +25,5 @@ type Register struct {
 	Phone string `json:"phone" validate:"required"`
 	// The BirthDate of the user
 	// required: true
-	BirthDate string `json:"birth_date" validate:"required,datetime"`
-}
-
-// swagger:parameters register-user
-type _ struct {
-	// Body to register a user
-	// in:body
-	// required: true
-	Body Register
+	BirthDate string `json:"birth_date" validate:"required,birthDate"`
 }

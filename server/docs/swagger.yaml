@@ -21,7 +21,6 @@ definitions:
     properties:
       birth_date:
         description: The BirthDate of the user
-        format: date-time
         type: string
         x-go-name: BirthDate
       email:

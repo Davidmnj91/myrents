@@ -10,11 +10,20 @@ type Handler interface {
 }
 
 type loginHandler struct {
-	service Service
+	service   Service
+	validator validation.Validator
 }
 
-func NewHandler(service Service) Handler {
-	return &loginHandler{service}
+func NewHandler(service Service, validator validation.Validator) Handler {
+	return &loginHandler{service, validator}
+}
+
+// swagger:parameters login-user
+type RequestWrapper struct {
+	// Body to log in a user
+	// in: body
+	// required: true
+	Body Login
 }
 
 // Login swagger:route POST /login auth login-user
@@ -34,7 +43,7 @@ func (h *loginHandler) Login(ctx *fiber.Ctx) error {
 			})
 	}
 
-	if err := validation.ValidateStruct(*loginUser); err != nil {
+	if err := h.validator.ValidateStruct(*loginUser); err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(err)
 	}
 

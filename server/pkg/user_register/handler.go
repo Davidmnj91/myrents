@@ -10,11 +10,20 @@ type Handler interface {
 }
 
 type registerHandler struct {
-	service Service
+	service   Service
+	validator validation.Validator
 }
 
-func NewHandler(service Service) Handler {
-	return &registerHandler{service}
+func NewHandler(service Service, validator validation.Validator) Handler {
+	return &registerHandler{service, validator}
+}
+
+// swagger:parameters register-user
+type RequestWrapper struct {
+	// Body to register a user
+	// in:body
+	// required: true
+	Body Register
 }
 
 // Register swagger:route POST /register user register-user
@@ -34,7 +43,7 @@ func (h *registerHandler) Register(ctx *fiber.Ctx) error {
 			})
 	}
 
-	if err := validation.ValidateStruct(*reqUser); err != nil {
+	if err := h.validator.ValidateStruct(*reqUser); err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(err)
 	}
 

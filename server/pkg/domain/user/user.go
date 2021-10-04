@@ -16,7 +16,7 @@ type User struct {
 	IDNumber  string
 	Email     string
 	Phone     string
-	BirthDate time.Time
+	BirthDate BirthDate
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt time.Time

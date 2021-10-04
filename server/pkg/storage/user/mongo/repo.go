@@ -6,6 +6,7 @@ import (
 	"github.com/Davidmnj91/myrents/pkg/domain/user"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/x/mongo/driver/uuid"
 )
 
 type mongoRepository struct {
@@ -17,6 +18,14 @@ func NewRepository(db *mongo.Collection) user.Repository {
 }
 
 func (r *mongoRepository) Add(ctx context.Context, user *user.User) error {
+	toInsert := ToRepository(user)
+	toInsert.ID, _ = uuid.New()
+
+	_, err := r.db.InsertOne(ctx, toInsert)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 

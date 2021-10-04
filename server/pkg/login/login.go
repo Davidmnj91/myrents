@@ -9,11 +9,3 @@ type Login struct {
 	// required: true
 	Password string `json:"password" validate:"required"`
 }
-
-// swagger:parameters login-user
-type _ struct {
-	// Body to log in a user
-	// in: body
-	// required: true
-	Body Login
-}
