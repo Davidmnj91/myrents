@@ -47,12 +47,12 @@ definitions:
         description: The Surname of the user
         type: string
         x-go-name: Surname
-      user_name:
+      username:
         description: The name of the user in the app
         type: string
         x-go-name: Username
     required:
-    - user_name
+    - username
     - password
     - name
     - surname
@@ -68,17 +68,6 @@ info:
   title: classification MyRents.
   version: 1.0.0
 paths:
-  /account:
-    delete:
-      operationId: remove-account
-      responses:
-        "200":
-          description: Successful delete
-        "500":
-          description: Internal server error
-      summary: Deletes an existing account on the system.
-      tags:
-      - user
   /login:
     post:
       operationId: login-user
@@ -124,6 +113,17 @@ paths:
         "500":
           description: Internal server error
       summary: Creates a new user in the system.
+      tags:
+      - user
+  /removeAccount:
+    delete:
+      operationId: remove-account
+      responses:
+        "200":
+          description: Successful delete
+        "500":
+          description: Internal server error
+      summary: Deletes an existing account on the system.
       tags:
       - user
 produces:

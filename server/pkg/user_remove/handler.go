@@ -17,7 +17,7 @@ func NewHandler(service Service) Handler {
 	return &removeHandler{service}
 }
 
-// RemoveAccount swagger:route DELETE /account user remove-account
+// RemoveAccount swagger:route DELETE /removeAccount user remove-account
 //
 // Deletes an existing account on the system.
 //
@@ -25,18 +25,14 @@ func NewHandler(service Service) Handler {
 // 		200: description:Successful delete
 // 		500: description:Internal server error
 func (h *removeHandler) RemoveAccount(ctx *fiber.Ctx) error {
-	userUUID := ctx.Params("userUUID")
+	token := ctx.Get("user")
 
-	if len(userUUID) == 0 {
-		return ctx.SendStatus(fiber.StatusForbidden)
+	uuid, err := domain.Parse(token)
+	if err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(err)
 	}
 
-	var uuid domain.UUID
-	if err := uuid.UUID.Scan(userUUID); err != nil {
-		return ctx.SendStatus(fiber.StatusProxyAuthRequired)
-	}
-
-	err := h.service.RemoveAccount(ctx.Context(), uuid)
+	err = h.service.RemoveAccount(ctx.Context(), uuid)
 	if err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(err)
 	}

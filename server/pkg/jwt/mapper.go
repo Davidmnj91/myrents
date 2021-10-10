@@ -6,11 +6,13 @@ import (
 )
 
 func ToClaims(claims auth.JWTClaims) jwt.Claims {
-	return jwt.MapClaims{
-		"iss": claims.Issuer,
-		"exp": claims.Exp,
-		"iat": claims.Iat,
-		"sub": claims.Sub,
+	return jwt.StandardClaims{
+		Audience:  claims.Issuer,
+		ExpiresAt: claims.Exp,
+		IssuedAt:  claims.Iat,
+		NotBefore: claims.Iat,
+		Issuer:    claims.Issuer,
+		Subject:   claims.Sub,
 	}
 }
 

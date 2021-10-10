@@ -27,6 +27,6 @@ func (r *mongoRepository) FindByUserId(ctx context.Context, userUUID domain.UUID
 	return []realState.RealState{}, nil
 }
 
-func (r *mongoRepository) Update(ctx context.Context, update *RealState) (*realState.RealState, error) {
+func (r *mongoRepository) Update(ctx context.Context, update *realState.RealState) (*realState.RealState, error) {
 	return &realState.RealState{}, nil
 }

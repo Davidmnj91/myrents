@@ -1,13 +1,16 @@
 package mongo
 
 import (
+	domain "github.com/Davidmnj91/myrents/pkg/domain/types"
 	"github.com/Davidmnj91/myrents/pkg/domain/user"
 )
 
-func ToDomain(person Person) user.User {
+func ToDomain(person Person) *user.User {
 	birthDate, _ := user.NewBirthDate(person.BirthDate)
+	uuid, _ := domain.Parse(person.ID)
 
-	return user.User{
+	return &user.User{
+		UserUUID:  uuid,
 		Username:  person.Username,
 		Password:  person.Password,
 		Name:      person.Name,

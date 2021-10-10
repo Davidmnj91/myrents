@@ -19,7 +19,8 @@ func NewRepository(client *redis.Client, ttl int64) auth.Repository {
 }
 
 func (r *redisRepository) GetSession(ctx context.Context, uuid domain.UUID) (auth.Session, error) {
-	sessionStr, err := r.client.Get(ctx, uuid.String()).Result()
+	uuidStr := uuid.String()
+	sessionStr, err := r.client.Get(ctx, uuidStr).Result()
 
 	if err == redis.Nil {
 		return auth.Session{}, errors.New("key does not exists")
@@ -42,28 +43,20 @@ func (r *redisRepository) CreateSession(ctx context.Context, session auth.Sessio
 		return err
 	}
 
-	_, err = r.client.Set(ctx, session.UserUUID.String(), sessionStr, time.Duration(r.ttl)).Result()
+	timeout := time.Millisecond * time.Duration(r.ttl)
+	err = r.client.Set(ctx, session.UserUUID.String(), sessionStr, timeout).Err()
 
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func (r *redisRepository) RefreshSession(ctx context.Context, session auth.Session) error {
-	_, err := r.client.Expire(ctx, session.UserUUID.String(), time.Duration(r.ttl)).Result()
+	timeout := time.Millisecond * time.Duration(r.ttl)
 
-	if err != nil {
-		return err
-	}
-	return nil
+	_, err := r.client.Expire(ctx, session.UserUUID.String(), timeout).Result()
+
+	return err
 }
 
 func (r *redisRepository) RemoveSession(ctx context.Context, userUUID domain.UUID) error {
-	_, err := r.client.Del(ctx, userUUID.String()).Result()
-
-	if err != nil {
-		return err
-	}
-	return nil
+	return r.client.Del(ctx, userUUID.String()).Err()
 }

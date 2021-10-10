@@ -2,11 +2,12 @@ package mongo
 
 import (
 	"context"
+	"errors"
 	"github.com/Davidmnj91/myrents/pkg/domain/types"
 	"github.com/Davidmnj91/myrents/pkg/domain/user"
+	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/x/mongo/driver/uuid"
 )
 
 type mongoRepository struct {
@@ -19,7 +20,7 @@ func NewRepository(db *mongo.Collection) user.Repository {
 
 func (r *mongoRepository) Add(ctx context.Context, user *user.User) error {
 	toInsert := ToRepository(user)
-	toInsert.ID, _ = uuid.New()
+	toInsert.ID = uuid.New().String()
 
 	_, err := r.db.InsertOne(ctx, toInsert)
 	if err != nil {
@@ -30,11 +31,35 @@ func (r *mongoRepository) Add(ctx context.Context, user *user.User) error {
 }
 
 func (r *mongoRepository) FindById(ctx context.Context, uuid domain.UUID) (*user.User, error) {
-	return &user.User{}, nil
+	query := bson.M{"_id": uuid.String()}
+	found := r.db.FindOne(ctx, query)
+	if err := found.Err(); err != nil {
+		return nil, err
+	}
+
+	var person Person
+	err := found.Decode(&person)
+	if err != nil {
+		return nil, err
+	}
+
+	return ToDomain(person), nil
 }
 
 func (r *mongoRepository) FindByUsername(ctx context.Context, username string) (*user.User, error) {
-	return &user.User{}, nil
+	query := bson.M{"username": username}
+	found := r.db.FindOne(ctx, query)
+	if err := found.Err(); err != nil {
+		return nil, err
+	}
+
+	var person Person
+	err := found.Decode(&person)
+	if err != nil {
+		return nil, err
+	}
+
+	return ToDomain(person), nil
 }
 
 func (r *mongoRepository) Exists(ctx context.Context, user *user.User) (bool, error) {
@@ -57,9 +82,14 @@ func (r *mongoRepository) Exists(ctx context.Context, user *user.User) (bool, er
 }
 
 func (r mongoRepository) Update(ctx context.Context, update *user.User) (*user.User, error) {
-	return &user.User{}, nil
-}
+	updated, err := r.db.UpdateByID(ctx, update.UserUUID.String(), ToRepository(update))
+	if err != nil {
+		return nil, err
+	}
 
-func (r *mongoRepository) Delete(ctx context.Context, uuid domain.UUID) error {
-	return nil
+	if updated.ModifiedCount == 0 {
+		return nil, errors.New("could not find user matching criteria")
+	}
+
+	return r.FindById(ctx, update.UserUUID)
 }

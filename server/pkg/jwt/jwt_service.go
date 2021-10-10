@@ -20,7 +20,7 @@ func (s *jwtService) SignJWT(claims auth.JWTClaims) (auth.JWTToken, error) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, ToClaims(claims))
 
-	tokenString, err := token.SignedString(s.tokenSeed)
+	tokenString, err := token.SignedString([]byte(s.tokenSeed))
 	if err != nil {
 		return "", err
 	}
@@ -29,12 +29,12 @@ func (s *jwtService) SignJWT(claims auth.JWTClaims) (auth.JWTToken, error) {
 }
 
 func (s *jwtService) DecodeJWT(tokenString auth.JWTToken) (auth.JWTClaims, error) {
-	token, err := jwt.Parse(string(tokenString), func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(string(tokenString), &jwt.StandardClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}
 
-		return s.tokenSeed, nil
+		return []byte(s.tokenSeed), nil
 	})
 
 	if err != nil {

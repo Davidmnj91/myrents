@@ -19,6 +19,8 @@ func NewJWTClaims(uuid domain.UUID) JWTClaims {
 }
 
 func (j *JWTClaims) Activate(expirationTime int) {
-	j.Exp = time.Now().Add(time.Minute * time.Duration(expirationTime)).Unix()
-	j.Iat = time.Now().Unix()
+	now := time.Now()
+
+	j.Exp = now.Add(time.Millisecond * time.Duration(expirationTime)).Unix()
+	j.Iat = now.Unix()
 }

@@ -30,9 +30,7 @@ func (m *middleware) CheckAuth() fiber.Handler {
 			})
 		}
 
-		// Always delete the header to avoid security breach
-		ctx.Set("user", "")
-		ctx.Set("user", session.UserUUID.String())
+		ctx.Request().Header.Set("user", session.UserUUID.String())
 
 		return ctx.Next()
 	}

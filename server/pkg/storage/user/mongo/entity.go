@@ -1,12 +1,11 @@
 package mongo
 
 import (
-	"go.mongodb.org/mongo-driver/x/mongo/driver/uuid"
 	"time"
 )
 
 type Person struct {
-	ID        uuid.UUID `json:"id" bson:"_id"`
+	ID        string    `json:"id" bson:"_id"`
 	Username  string    `json:"username" bson:"username"`
 	Password  string    `json:"password" bson:"password"`
 	Name      string    `json:"name" bson:"name"`
