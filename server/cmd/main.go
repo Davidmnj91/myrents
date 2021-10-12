@@ -8,7 +8,7 @@ import (
 	"github.com/Davidmnj91/myrents/pkg/logout"
 	"github.com/Davidmnj91/myrents/pkg/middleware"
 	"github.com/Davidmnj91/myrents/pkg/storage/auth/redis"
-	"github.com/Davidmnj91/myrents/pkg/storage/user/mongo"
+	user "github.com/Davidmnj91/myrents/pkg/storage/user/mongo"
 	"github.com/Davidmnj91/myrents/pkg/user_register"
 	"github.com/Davidmnj91/myrents/pkg/user_remove"
 	mongoUtil "github.com/Davidmnj91/myrents/pkg/util/db"
@@ -84,7 +84,7 @@ func main() {
 		panic(err)
 	}
 
-	repo := mongo.NewRepository(dbClient)
+	repo := user.NewRepository(dbClient)
 	redisRepo := redis.NewRepository(redisClient, int64(tokenTtl))
 
 	jwtService := jwt.NewService(tokenSeed, tokenTtl)

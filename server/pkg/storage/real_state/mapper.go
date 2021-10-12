@@ -4,7 +4,7 @@ import (
 	"github.com/Davidmnj91/myrents/pkg/domain/real_state"
 )
 
-func ToDomain(realState RealState) real_state.RealState {
+func ToDomain(realState RealStateEntity) real_state.RealState {
 	return real_state.RealState{
 		Street:   realState.Street,
 		ZipCode:  realState.ZipCode,
@@ -20,8 +20,8 @@ func ToDomain(realState RealState) real_state.RealState {
 	}
 }
 
-func ToRepository(realState real_state.RealState) RealState {
-	return RealState{
+func ToRepository(realState real_state.RealState) RealStateEntity {
+	return RealStateEntity{
 		// ID:        realState.ID,
 		Street:   realState.Street,
 		ZipCode:  realState.ZipCode,

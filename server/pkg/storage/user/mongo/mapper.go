@@ -1,4 +1,4 @@
-package mongo
+package user
 
 import (
 	domain "github.com/Davidmnj91/myrents/pkg/domain/types"
