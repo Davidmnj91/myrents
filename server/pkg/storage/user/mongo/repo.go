@@ -23,11 +23,8 @@ func (r *mongoRepository) Add(ctx context.Context, user *user.User) error {
 	toInsert.ID = uuid.New().String()
 
 	_, err := r.db.InsertOne(ctx, toInsert)
-	if err != nil {
-		return err
-	}
 
-	return nil
+	return err
 }
 
 func (r *mongoRepository) FindById(ctx context.Context, uuid domain.UUID) (*user.User, error) {
@@ -82,12 +79,23 @@ func (r *mongoRepository) Exists(ctx context.Context, user *user.User) (bool, er
 }
 
 func (r mongoRepository) Update(ctx context.Context, update *user.User) (*user.User, error) {
-	updated, err := r.db.UpdateByID(ctx, update.UserUUID.String(), ToRepository(update))
+	toUpdate := ToRepository(update)
+
+	query := bson.M{"$set": bson.M{
+		"email":      toUpdate.Email,
+		"phone":      toUpdate.Phone,
+		"birth_date": toUpdate.BirthDate,
+		"created_at": toUpdate.CreatedAt,
+		"updated_at": toUpdate.UpdatedAt,
+		"deleted_at": toUpdate.DeletedAt,
+	}}
+
+	updated, err := r.db.UpdateByID(ctx, update.UserUUID.String(), query)
 	if err != nil {
 		return nil, err
 	}
 
-	if updated.ModifiedCount == 0 {
+	if updated.MatchedCount == 0 {
 		return nil, errors.New("could not find user matching criteria")
 	}
 
