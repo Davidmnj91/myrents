@@ -6,10 +6,12 @@ definitions:
     properties:
       password:
         description: The password to login
+        example: mySecretPassword
         type: string
         x-go-name: Password
       username:
         description: The username to login
+        example: myUserName
         type: string
         x-go-name: Username
     required:
@@ -21,34 +23,42 @@ definitions:
     properties:
       birth_date:
         description: The BirthDate of the user
+        example: "2000-12-12"
         type: string
         x-go-name: BirthDate
       email:
         description: The Email of the user
+        example: myemail@me.com
         type: string
         x-go-name: Email
       id_number:
         description: The IDNumber of the user
+        example: 01234567-N
         type: string
         x-go-name: IDNumber
       name:
         description: The Name of the user
+        example: David
         type: string
         x-go-name: Name
       password:
         description: The Password of the user
+        example: mySecretPassword
         type: string
         x-go-name: Password
       phone:
         description: The Phone of the user
+        example: "666000222"
         type: string
         x-go-name: Phone
       surname:
         description: The Surname of the user
+        example: Sanchez
         type: string
         x-go-name: Surname
       username:
         description: The name of the user in the app
+        example: myUserName
         type: string
         x-go-name: Username
     required:
