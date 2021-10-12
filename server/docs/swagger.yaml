@@ -75,7 +75,7 @@ definitions:
 host: localhost:5000
 info:
   description: Documentation of our MyRents API.
-  title: classification MyRents.
+  title: MyRents
   version: 1.0.0
 paths:
   /login:
