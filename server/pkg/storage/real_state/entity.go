@@ -5,9 +5,9 @@ import (
 	"time"
 )
 
-/*RealStateEntity struct representation of a good of a landlord*/
-type RealStateEntity struct {
-	ID        uuid.UUID `json:"id" bson:"_id"`
+/*RealStateStorage struct representation of a good of a landlord*/
+type RealStateStorage struct {
+	ID        string    `json:"id" bson:"_id"`
 	Street    string    `json:"street" bson:"street"`
 	ZipCode   string    `json:"zip_code" bson:"zip_code"`
 	Province  string    `json:"province" bson:"province"`

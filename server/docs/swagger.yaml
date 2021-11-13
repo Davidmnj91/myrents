@@ -1,6 +1,6 @@
 basePath: /api
 consumes:
-- application/json
+  - application/json
 definitions:
   Login:
     properties:
@@ -15,8 +15,8 @@ definitions:
         type: string
         x-go-name: Username
     required:
-    - username
-    - password
+      - username
+      - password
     type: object
     x-go-package: github.com/Davidmnj91/myrents/pkg/login
   Register:
@@ -62,14 +62,14 @@ definitions:
         type: string
         x-go-name: Username
     required:
-    - username
-    - password
-    - name
-    - surname
-    - id_number
-    - email
-    - phone
-    - birth_date
+      - username
+      - password
+      - name
+      - surname
+      - id_number
+      - email
+      - phone
+      - birth_date
     type: object
     x-go-package: github.com/Davidmnj91/myrents/pkg/user_register
 host: localhost:5000
@@ -82,12 +82,12 @@ paths:
     post:
       operationId: login-user
       parameters:
-      - description: Body to log in a user
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/Login'
+        - description: Body to log in a user
+          in: body
+          name: Body
+          required: true
+          schema:
+            $ref: '#/definitions/Login'
       responses:
         "200":
           description: Successful login, bearer token in "authorization" header
@@ -95,7 +95,7 @@ paths:
           description: Internal server error
       summary: Logs in a user account into the system.
       tags:
-      - auth
+        - auth
   /logout:
     delete:
       operationId: logout
@@ -106,17 +106,17 @@ paths:
           description: Internal server error
       summary: Logs out a user account from the system.
       tags:
-      - auth
+        - auth
   /register:
     post:
       operationId: register-user
       parameters:
-      - description: Body to register a user
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/Register'
+        - description: Body to register a user
+          in: body
+          name: Body
+          required: true
+          schema:
+            $ref: '#/definitions/Register'
       responses:
         "200":
           description: Successful registration
@@ -124,7 +124,7 @@ paths:
           description: Internal server error
       summary: Creates a new user in the system.
       tags:
-      - user
+        - user
   /removeAccount:
     delete:
       operationId: remove-account
@@ -135,9 +135,9 @@ paths:
           description: Internal server error
       summary: Deletes an existing account on the system.
       tags:
-      - user
+        - user
 produces:
-- application/json
+  - application/json
 schemes:
-- http
+  - http
 swagger: "2.0"
