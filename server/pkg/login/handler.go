@@ -18,7 +18,7 @@ func NewHandler(service Service, validator validation.Validator) Handler {
 	return &loginHandler{service, validator}
 }
 
-// swagger:parameters login-user
+// 	swagger:parameters login-user
 type RequestWrapper struct {
 	// Body to log in a user
 	// in: body
@@ -26,12 +26,19 @@ type RequestWrapper struct {
 	Body Login
 }
 
-// Login swagger:route POST /login auth login-user
+//	Successfully logged-in user
+//	swagger:response logged-user
+type ResponseWrapper struct {
+	// The authenticated user bearer JWT token Bearer base64EncodedJwtToken
+	Authorization string
+}
+
+// 	Login swagger:route POST /login auth login-user
 //
-// Logs in a user account into the system.
+// 	Logs in a user account into the system.
 //
-// Responses:
-// 		200: description:Successful login, bearer token in "authorization" header
+// 	Responses:
+// 		200: logged-user
 // 		500: description:Internal server error
 func (h *loginHandler) Login(ctx *fiber.Ctx) error {
 	loginUser := &Login{}

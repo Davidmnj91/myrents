@@ -18,19 +18,19 @@ func NewHandler(service Service, validator validation.Validator) Handler {
 	return &registerHandler{service, validator}
 }
 
-// swagger:parameters register-user
+// 	swagger:parameters register-user
 type RequestWrapper struct {
-	// Body to register a user
-	// in:body
-	// required: true
+	// 	Body to register a user
+	// 	in:body
+	// 	required: true
 	Body Register
 }
 
-// Register swagger:route POST /register user register-user
+// 	Register swagger:route POST /register user register-user
 //
-// Creates a new user in the system.
+// 	Creates a new user in the system.
 //
-// Responses:
+// 	Responses:
 // 		200: description:Successful registration
 // 		500: description:Internal server error
 func (h *registerHandler) Register(ctx *fiber.Ctx) error {

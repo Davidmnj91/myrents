@@ -9,6 +9,7 @@ import (
 	"github.com/Davidmnj91/myrents/pkg/middleware"
 	"github.com/Davidmnj91/myrents/pkg/storage/auth/redis"
 	user "github.com/Davidmnj91/myrents/pkg/storage/user/mongo"
+	"github.com/Davidmnj91/myrents/pkg/user_profile"
 	"github.com/Davidmnj91/myrents/pkg/user_register"
 	"github.com/Davidmnj91/myrents/pkg/user_remove"
 	mongoUtil "github.com/Davidmnj91/myrents/pkg/util/db"
@@ -97,7 +98,16 @@ func main() {
 	userRegisterHandler := user_register.NewRegister(repo, validator)
 	userDeleteHandler := user_remove.NewReMove(repo)
 
-	router := rest.NewRouter(rest.Routes{LoginHandler: loginHandler, LogoutHandler: logoutHandler, UserRegisterHandler: userRegisterHandler, UserDeleteHandler: userDeleteHandler, AuthMiddleware: authMiddleware})
+	userProfileHandler := user_profile.NewProfile(repo)
+
+	router := rest.NewRouter(rest.Routes{
+		LoginHandler:        loginHandler,
+		LogoutHandler:       logoutHandler,
+		UserRegisterHandler: userRegisterHandler,
+		UserDeleteHandler:   userDeleteHandler,
+		UserProfileHandler:  userProfileHandler,
+		AuthMiddleware:      authMiddleware,
+	})
 
 	apiPort, err := env.GetEnvAsIntOrFallback("API_PORT", defaultApiPort)
 	if err != nil {

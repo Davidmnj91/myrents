@@ -6,7 +6,6 @@ import (
 
 type Mapper interface {
 	ToDomain(register Register) *user.User
-	ToHandler(user user.User) *interface{}
 }
 
 func ToDomain(register Register) *user.User {

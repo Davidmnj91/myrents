@@ -17,11 +17,14 @@ func NewHandler(service Service) Handler {
 	return &logoutHandler{service}
 }
 
-// Logout swagger:route DELETE /logout auth logout
+// 	Logout swagger:route DELETE /logout auth logout
 //
-// Logs out a user account from the system.
+// 	Logs out a user account from the system.
 //
-// Responses:
+// 	Security:
+//		loggedIn: []
+//
+// 	Responses:
 // 		200: description:Successful logout
 // 		500: description:Internal server error
 func (h *logoutHandler) Logout(ctx *fiber.Ctx) error {

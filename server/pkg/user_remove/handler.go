@@ -17,11 +17,14 @@ func NewHandler(service Service) Handler {
 	return &removeHandler{service}
 }
 
-// RemoveAccount swagger:route DELETE /removeAccount user remove-account
+// 	RemoveAccount swagger:route DELETE /removeAccount user remove-account
 //
-// Deletes an existing account on the system.
+// 	Deletes an existing account on the system.
 //
-// Responses:
+// 	Security:
+//		loggedIn: []
+//
+// 	Responses:
 // 		200: description:Successful delete
 // 		500: description:Internal server error
 func (h *removeHandler) RemoveAccount(ctx *fiber.Ctx) error {

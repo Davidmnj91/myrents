@@ -4,6 +4,7 @@ import (
 	"github.com/Davidmnj91/myrents/pkg/login"
 	"github.com/Davidmnj91/myrents/pkg/logout"
 	"github.com/Davidmnj91/myrents/pkg/middleware"
+	"github.com/Davidmnj91/myrents/pkg/user_profile"
 	"github.com/Davidmnj91/myrents/pkg/user_register"
 	"github.com/Davidmnj91/myrents/pkg/user_remove"
 	"github.com/gofiber/fiber/v2"
@@ -18,6 +19,7 @@ type router struct {
 	logoutHandler       logout.Handler
 	userRegisterHandler user_register.Handler
 	userDeleteHandler   user_remove.Handler
+	userProfileHandler  user_profile.Handler
 
 	authMiddleware middleware.Middleware
 }
@@ -27,6 +29,7 @@ type Routes struct {
 	LogoutHandler       logout.Handler
 	UserRegisterHandler user_register.Handler
 	UserDeleteHandler   user_remove.Handler
+	UserProfileHandler  user_profile.Handler
 
 	AuthMiddleware middleware.Middleware
 }
@@ -37,6 +40,7 @@ func NewRouter(routes Routes) Router {
 		logoutHandler:       routes.LogoutHandler,
 		userRegisterHandler: routes.UserRegisterHandler,
 		userDeleteHandler:   routes.UserDeleteHandler,
+		userProfileHandler:  routes.UserProfileHandler,
 		authMiddleware:      routes.AuthMiddleware,
 	}
 }
@@ -47,4 +51,6 @@ func (r *router) Serve(group fiber.Router) {
 
 	group.Post("/register", r.userRegisterHandler.Register)
 	group.Delete("/removeAccount", r.authMiddleware.CheckAuth(), r.userDeleteHandler.RemoveAccount)
+
+	group.Get("/profile", r.userProfileHandler.Profile)
 }
