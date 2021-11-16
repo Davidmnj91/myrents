@@ -52,5 +52,5 @@ func (r *router) Serve(group fiber.Router) {
 	group.Post("/register", r.userRegisterHandler.Register)
 	group.Delete("/removeAccount", r.authMiddleware.CheckAuth(), r.userDeleteHandler.RemoveAccount)
 
-	group.Get("/profile", r.userProfileHandler.Profile)
+	group.Get("/profile", r.authMiddleware.CheckAuth(), r.userProfileHandler.Profile)
 }
