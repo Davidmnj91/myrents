@@ -2,18 +2,13 @@ package main
 
 import (
 	"fmt"
+	"github.com/Davidmnj91/myrents/pkg/auth"
 	"github.com/Davidmnj91/myrents/pkg/http/rest"
-	"github.com/Davidmnj91/myrents/pkg/jwt"
-	"github.com/Davidmnj91/myrents/pkg/login"
-	"github.com/Davidmnj91/myrents/pkg/logout"
-	"github.com/Davidmnj91/myrents/pkg/middleware"
-	"github.com/Davidmnj91/myrents/pkg/real_state_register"
+	"github.com/Davidmnj91/myrents/pkg/real_state"
 	"github.com/Davidmnj91/myrents/pkg/storage/auth/redis"
-	"github.com/Davidmnj91/myrents/pkg/storage/real_state"
-	user "github.com/Davidmnj91/myrents/pkg/storage/user/mongo"
-	"github.com/Davidmnj91/myrents/pkg/user_profile"
-	"github.com/Davidmnj91/myrents/pkg/user_register"
-	"github.com/Davidmnj91/myrents/pkg/user_remove"
+	realStateRepository "github.com/Davidmnj91/myrents/pkg/storage/real_state/mongo"
+	userRepository "github.com/Davidmnj91/myrents/pkg/storage/user/mongo"
+	"github.com/Davidmnj91/myrents/pkg/user"
 	mongoUtil "github.com/Davidmnj91/myrents/pkg/util/db"
 	"github.com/Davidmnj91/myrents/pkg/util/env"
 	redisUtil "github.com/Davidmnj91/myrents/pkg/util/redis"
@@ -69,26 +64,12 @@ func main() {
 	dbPort := env.GetEnvAsStringOrFallback("DB_PORT", defaultDBPort)
 	schema := env.GetEnvAsStringOrFallback("DB_SCHEMA", defaultDBSchema)
 
-	userDBClient, err := mongoUtil.ConnectMongo(mongoUtil.NewMongoConfiguration(
+	dbClient, err := mongoUtil.ConnectMongo(mongoUtil.NewMongoConfiguration(
 		dbUser,
 		dbPass,
 		dbHost,
 		dbPort,
 		schema,
-		"users",
-	))
-
-	if err != nil {
-		panic(err)
-	}
-
-	realStateDBClient, err := mongoUtil.ConnectMongo(mongoUtil.NewMongoConfiguration(
-		dbUser,
-		dbPass,
-		dbHost,
-		dbPort,
-		schema,
-		"real_state",
 	))
 
 	if err != nil {
@@ -100,32 +81,22 @@ func main() {
 		panic(err)
 	}
 
-	userRepo := user.NewRepository(userDBClient)
-	realStateRepo := real_state.NewRepository(realStateDBClient)
+	userRepo := userRepository.NewRepository(dbClient)
+	realStateRepo := realStateRepository.NewRepository(dbClient)
 	redisRepo := redis.NewRepository(redisClient, int64(tokenTtl))
 
-	jwtService := jwt.NewService(tokenSeed, tokenTtl)
-	authService := middleware.NewService(jwtService, redis.NewRepository(redisClient, int64(tokenTtl)))
-
-	authMiddleware := middleware.NewAuthMiddleware(authService)
-	loginHandler := login.NewLogin(validator, userRepo, redisRepo, jwtService)
-	logoutHandler := logout.NewLogout(redisRepo)
-
-	userRegisterHandler := user_register.NewRegister(userRepo, validator)
-	userDeleteHandler := user_remove.NewReMove(userRepo)
-
-	userProfileHandler := user_profile.NewProfile(userRepo)
-
-	realStateRegister := real_state_register.NewRealStateRegister(realStateRepo, validator)
+	authModule := auth.NewAuthModule(tokenSeed, int64(tokenTtl), redisRepo, userRepo, validator)
+	userModule := user.NewUserModule(userRepo, validator)
+	realStateModule := real_state.NewRealStateModule(realStateRepo, validator)
 
 	router := rest.NewRouter(rest.Routes{
-		LoginHandler:             loginHandler,
-		LogoutHandler:            logoutHandler,
-		UserRegisterHandler:      userRegisterHandler,
-		UserDeleteHandler:        userDeleteHandler,
-		UserProfileHandler:       userProfileHandler,
-		RealStateRegisterHandler: realStateRegister,
-		AuthMiddleware:           authMiddleware,
+		LoginHandler:             authModule.LoginHandler,
+		LogoutHandler:            authModule.LogoutHandler,
+		UserRegisterHandler:      userModule.RegisterHandler,
+		UserDeleteHandler:        userModule.DeleteHandler,
+		UserProfileHandler:       userModule.ProfileHandler,
+		RealStateRegisterHandler: realStateModule.RegisterHandler,
+		AuthMiddleware:           authModule.AuthMiddleware,
 	})
 
 	apiPort, err := env.GetEnvAsIntOrFallback("API_PORT", defaultApiPort)

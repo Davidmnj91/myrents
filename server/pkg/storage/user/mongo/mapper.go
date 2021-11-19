@@ -1,15 +1,15 @@
 package user
 
 import (
-	domain "github.com/Davidmnj91/myrents/pkg/domain/types"
-	"github.com/Davidmnj91/myrents/pkg/domain/user"
+	"github.com/Davidmnj91/myrents/pkg/types"
+	"github.com/Davidmnj91/myrents/pkg/user/domain"
 )
 
-func ToDomain(person Person) *user.User {
-	birthDate, _ := user.NewBirthDate(person.BirthDate)
-	uuid, _ := domain.Parse(person.ID)
+func ToDomain(person Person) *domain.User {
+	birthDate, _ := domain.NewBirthDate(person.BirthDate)
+	uuid, _ := types.Parse(person.ID)
 
-	return &user.User{
+	return &domain.User{
 		UserUUID:  uuid,
 		Username:  person.Username,
 		Password:  person.Password,
@@ -25,7 +25,7 @@ func ToDomain(person Person) *user.User {
 	}
 }
 
-func ToRepository(user *user.User) Person {
+func ToRepository(user *domain.User) Person {
 	return Person{
 		Username:  user.Username,
 		Password:  user.Password,

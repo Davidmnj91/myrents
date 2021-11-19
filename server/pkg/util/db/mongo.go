@@ -9,27 +9,25 @@ import (
 )
 
 type MongoConfiguration struct {
-	user       string
-	pass       string
-	host       string
-	port       string
-	schema     string
-	collection string
+	user   string
+	pass   string
+	host   string
+	port   string
+	schema string
 }
 
-func NewMongoConfiguration(user string, pass string, host string, port string, table string, collection string) *MongoConfiguration {
+func NewMongoConfiguration(user string, pass string, host string, port string, table string) *MongoConfiguration {
 	return &MongoConfiguration{
-		user:       user,
-		pass:       pass,
-		host:       host,
-		port:       port,
-		schema:     table,
-		collection: collection,
+		user:   user,
+		pass:   pass,
+		host:   host,
+		port:   port,
+		schema: table,
 	}
 }
 
 // ConnectMongo to a database handle from a mongo configuration.
-func ConnectMongo(configuration *MongoConfiguration) (*mongo.Collection, error) {
+func ConnectMongo(configuration *MongoConfiguration) (*mongo.Database, error) {
 	mongoUri := fmt.Sprintf("mongodb://%s:%s@%s:%s/", configuration.user, configuration.pass, configuration.host, configuration.port)
 
 	clientOptions := options.Client().ApplyURI(mongoUri)
@@ -46,7 +44,7 @@ func ConnectMongo(configuration *MongoConfiguration) (*mongo.Collection, error) 
 		return nil, err
 	}
 
-	db := client.Database(configuration.schema).Collection(configuration.collection)
+	db := client.Database(configuration.schema)
 
 	return db, nil
 }

@@ -1,13 +1,13 @@
 package rest
 
 import (
-	"github.com/Davidmnj91/myrents/pkg/login"
-	"github.com/Davidmnj91/myrents/pkg/logout"
-	"github.com/Davidmnj91/myrents/pkg/middleware"
-	"github.com/Davidmnj91/myrents/pkg/real_state_register"
-	"github.com/Davidmnj91/myrents/pkg/user_profile"
-	"github.com/Davidmnj91/myrents/pkg/user_register"
-	"github.com/Davidmnj91/myrents/pkg/user_remove"
+	"github.com/Davidmnj91/myrents/pkg/auth/login"
+	"github.com/Davidmnj91/myrents/pkg/auth/logout"
+	"github.com/Davidmnj91/myrents/pkg/auth/middleware"
+	"github.com/Davidmnj91/myrents/pkg/real_state/real_state_register"
+	"github.com/Davidmnj91/myrents/pkg/user/user_profile"
+	"github.com/Davidmnj91/myrents/pkg/user/user_register"
+	"github.com/Davidmnj91/myrents/pkg/user/user_remove"
 	"github.com/gofiber/fiber/v2"
 )
 

@@ -3,8 +3,8 @@ package user
 import (
 	"context"
 	"errors"
-	"github.com/Davidmnj91/myrents/pkg/domain/types"
-	"github.com/Davidmnj91/myrents/pkg/domain/user"
+	"github.com/Davidmnj91/myrents/pkg/types"
+	"github.com/Davidmnj91/myrents/pkg/user/domain"
 	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -14,11 +14,11 @@ type mongoRepository struct {
 	db *mongo.Collection
 }
 
-func NewRepository(db *mongo.Collection) user.Repository {
-	return &mongoRepository{db}
+func NewRepository(db *mongo.Database) domain.Repository {
+	return &mongoRepository{db.Collection("users")}
 }
 
-func (r *mongoRepository) Add(ctx context.Context, user *user.User) error {
+func (r *mongoRepository) Add(ctx context.Context, user *domain.User) error {
 	toInsert := ToRepository(user)
 	toInsert.ID = uuid.New().String()
 
@@ -27,7 +27,7 @@ func (r *mongoRepository) Add(ctx context.Context, user *user.User) error {
 	return err
 }
 
-func (r *mongoRepository) FindById(ctx context.Context, uuid domain.UUID) (*user.User, error) {
+func (r *mongoRepository) FindById(ctx context.Context, uuid types.UUID) (*domain.User, error) {
 	query := bson.M{"_id": uuid.String()}
 	found := r.db.FindOne(ctx, query)
 	if err := found.Err(); err != nil {
@@ -43,7 +43,7 @@ func (r *mongoRepository) FindById(ctx context.Context, uuid domain.UUID) (*user
 	return ToDomain(person), nil
 }
 
-func (r *mongoRepository) FindByUsername(ctx context.Context, username string) (*user.User, error) {
+func (r *mongoRepository) FindByUsername(ctx context.Context, username string) (*domain.User, error) {
 	query := bson.M{"username": username}
 	found := r.db.FindOne(ctx, query)
 	if err := found.Err(); err != nil {
@@ -59,7 +59,7 @@ func (r *mongoRepository) FindByUsername(ctx context.Context, username string) (
 	return ToDomain(person), nil
 }
 
-func (r *mongoRepository) Exists(ctx context.Context, user *user.User) (bool, error) {
+func (r *mongoRepository) Exists(ctx context.Context, user *domain.User) (bool, error) {
 	query := bson.M{
 		"$or": []bson.M{
 			{"id_number": user.IDNumber},
@@ -78,7 +78,7 @@ func (r *mongoRepository) Exists(ctx context.Context, user *user.User) (bool, er
 	return matches != 0, nil
 }
 
-func (r mongoRepository) Update(ctx context.Context, update *user.User) (*user.User, error) {
+func (r mongoRepository) Update(ctx context.Context, update *domain.User) (*domain.User, error) {
 	toUpdate := ToRepository(update)
 
 	query := bson.M{"$set": bson.M{

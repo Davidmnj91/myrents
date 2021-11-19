@@ -2,11 +2,11 @@ package redis
 
 import (
 	"encoding/json"
-	"github.com/Davidmnj91/myrents/pkg/domain/auth"
-	domain "github.com/Davidmnj91/myrents/pkg/domain/types"
+	"github.com/Davidmnj91/myrents/pkg/auth/domain"
+	"github.com/Davidmnj91/myrents/pkg/types"
 )
 
-func ToRedis(session auth.Session) ([]byte, error) {
+func ToRedis(session domain.Session) ([]byte, error) {
 	redisSession := &Session{
 		UserUUID: session.UserUUID.String(),
 		Username: session.Username,
@@ -15,20 +15,20 @@ func ToRedis(session auth.Session) ([]byte, error) {
 	return json.Marshal(redisSession)
 }
 
-func ToDomain(sessionStr []byte) (auth.Session, error) {
+func ToDomain(sessionStr []byte) (domain.Session, error) {
 	var redisSession Session
 
 	err := json.Unmarshal(sessionStr, &redisSession)
 	if err != nil {
-		return auth.Session{}, err
+		return domain.Session{}, err
 	}
 
-	uuid, err := domain.Parse(redisSession.UserUUID)
+	uuid, err := types.Parse(redisSession.UserUUID)
 	if err != nil {
-		return auth.Session{}, err
+		return domain.Session{}, err
 	}
 
-	return auth.Session{
+	return domain.Session{
 		UserUUID: uuid,
 		Username: redisSession.Username,
 	}, nil

@@ -3,8 +3,8 @@ package redis
 import (
 	"context"
 	"errors"
-	"github.com/Davidmnj91/myrents/pkg/domain/auth"
-	"github.com/Davidmnj91/myrents/pkg/domain/types"
+	"github.com/Davidmnj91/myrents/pkg/auth/domain"
+	"github.com/Davidmnj91/myrents/pkg/types"
 	"github.com/go-redis/redis/v8"
 	"time"
 )
@@ -14,30 +14,30 @@ type redisRepository struct {
 	ttl    int64
 }
 
-func NewRepository(client *redis.Client, ttl int64) auth.Repository {
+func NewRepository(client *redis.Client, ttl int64) domain.Repository {
 	return &redisRepository{client, ttl}
 }
 
-func (r *redisRepository) GetSession(ctx context.Context, uuid domain.UUID) (auth.Session, error) {
+func (r *redisRepository) GetSession(ctx context.Context, uuid types.UUID) (domain.Session, error) {
 	uuidStr := uuid.String()
 	sessionStr, err := r.client.Get(ctx, uuidStr).Result()
 
 	if err == redis.Nil {
-		return auth.Session{}, errors.New("key does not exists")
+		return domain.Session{}, errors.New("key does not exists")
 	}
 	if err != nil {
-		return auth.Session{}, err
+		return domain.Session{}, err
 	}
 
 	session, err := ToDomain([]byte(sessionStr))
 	if err != nil {
-		return auth.Session{}, err
+		return domain.Session{}, err
 	}
 	return session, nil
 
 }
 
-func (r *redisRepository) CreateSession(ctx context.Context, session auth.Session) error {
+func (r *redisRepository) CreateSession(ctx context.Context, session domain.Session) error {
 	sessionStr, err := ToRedis(session)
 	if err != nil {
 		return err
@@ -49,7 +49,7 @@ func (r *redisRepository) CreateSession(ctx context.Context, session auth.Sessio
 	return err
 }
 
-func (r *redisRepository) RefreshSession(ctx context.Context, session auth.Session) error {
+func (r *redisRepository) RefreshSession(ctx context.Context, session domain.Session) error {
 	timeout := time.Millisecond * time.Duration(r.ttl)
 
 	_, err := r.client.Expire(ctx, session.UserUUID.String(), timeout).Result()
@@ -57,6 +57,6 @@ func (r *redisRepository) RefreshSession(ctx context.Context, session auth.Sessi
 	return err
 }
 
-func (r *redisRepository) RemoveSession(ctx context.Context, userUUID domain.UUID) error {
+func (r *redisRepository) RemoveSession(ctx context.Context, userUUID types.UUID) error {
 	return r.client.Del(ctx, userUUID.String()).Err()
 }

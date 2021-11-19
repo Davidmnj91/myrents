@@ -1,0 +1,26 @@
+package domain
+
+import (
+	"github.com/Davidmnj91/myrents/pkg/types"
+	"time"
+)
+
+type JWTToken string
+
+type JWTClaims struct {
+	Issuer string
+	Exp    int64
+	Iat    int64
+	Sub    string
+}
+
+func NewJWTClaims(uuid types.UUID) JWTClaims {
+	return JWTClaims{Issuer: "MyRents", Sub: uuid.String()}
+}
+
+func (j *JWTClaims) Activate(expirationTime int64) {
+	now := time.Now()
+
+	j.Exp = now.Add(time.Millisecond * time.Duration(expirationTime)).Unix()
+	j.Iat = now.Unix()
+}
