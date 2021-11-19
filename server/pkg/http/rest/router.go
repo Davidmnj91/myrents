@@ -4,6 +4,7 @@ import (
 	"github.com/Davidmnj91/myrents/pkg/login"
 	"github.com/Davidmnj91/myrents/pkg/logout"
 	"github.com/Davidmnj91/myrents/pkg/middleware"
+	"github.com/Davidmnj91/myrents/pkg/real_state_register"
 	"github.com/Davidmnj91/myrents/pkg/user_profile"
 	"github.com/Davidmnj91/myrents/pkg/user_register"
 	"github.com/Davidmnj91/myrents/pkg/user_remove"
@@ -21,6 +22,8 @@ type router struct {
 	userDeleteHandler   user_remove.Handler
 	userProfileHandler  user_profile.Handler
 
+	realStateRegisterHandler real_state_register.Handler
+
 	authMiddleware middleware.Middleware
 }
 
@@ -31,17 +34,20 @@ type Routes struct {
 	UserDeleteHandler   user_remove.Handler
 	UserProfileHandler  user_profile.Handler
 
+	RealStateRegisterHandler real_state_register.Handler
+
 	AuthMiddleware middleware.Middleware
 }
 
 func NewRouter(routes Routes) Router {
 	return &router{
-		loginHandler:        routes.LoginHandler,
-		logoutHandler:       routes.LogoutHandler,
-		userRegisterHandler: routes.UserRegisterHandler,
-		userDeleteHandler:   routes.UserDeleteHandler,
-		userProfileHandler:  routes.UserProfileHandler,
-		authMiddleware:      routes.AuthMiddleware,
+		loginHandler:             routes.LoginHandler,
+		logoutHandler:            routes.LogoutHandler,
+		userRegisterHandler:      routes.UserRegisterHandler,
+		userDeleteHandler:        routes.UserDeleteHandler,
+		userProfileHandler:       routes.UserProfileHandler,
+		realStateRegisterHandler: routes.RealStateRegisterHandler,
+		authMiddleware:           routes.AuthMiddleware,
 	}
 }
 
@@ -53,4 +59,6 @@ func (r *router) Serve(group fiber.Router) {
 	group.Delete("/removeAccount", r.authMiddleware.CheckAuth(), r.userDeleteHandler.RemoveAccount)
 
 	group.Get("/profile", r.authMiddleware.CheckAuth(), r.userProfileHandler.Profile)
+
+	group.Post("/real-state/register", r.authMiddleware.CheckAuth(), r.realStateRegisterHandler.Register)
 }

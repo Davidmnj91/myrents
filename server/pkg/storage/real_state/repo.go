@@ -43,6 +43,22 @@ func (r *mongoRepository) FindById(ctx context.Context, uuid domain.UUID) (*real
 	return ToDomain(entity), nil
 }
 
+func (r *mongoRepository) FindByLandReference(ctx context.Context, landReference string) (*realState.RealState, error) {
+	query := bson.M{"land_reference": landReference}
+	found := r.db.FindOne(ctx, query)
+	if err := found.Err(); err != nil {
+		return nil, err
+	}
+
+	var entity RealStateStorage
+	err := found.Decode(&entity)
+	if err != nil {
+		return nil, err
+	}
+
+	return ToDomain(entity), nil
+}
+
 func (r *mongoRepository) FindByUserId(ctx context.Context, userUUID domain.UUID) ([]realState.RealState, error) {
 	query := bson.M{"userid": userUUID}
 	found, err := r.db.Find(ctx, query)
@@ -63,6 +79,30 @@ func (r *mongoRepository) FindByUserId(ctx context.Context, userUUID domain.UUID
 	}
 
 	return realStates, nil
+}
+
+func (r *mongoRepository) Exists(ctx context.Context, realState *realState.RealState) (bool, error) {
+	query := bson.M{
+		"$or": []bson.M{
+			{"land_reference": realState.LandReference},
+			{"$and": []bson.M{
+				{"street": realState.Street},
+				{"zip_code": realState.ZipCode},
+				{"province": realState.Province},
+				{"country": realState.Country},
+				{"gateway": realState.Gateway},
+				{"door": realState.Door}},
+			},
+		},
+	}
+
+	matches, err := r.db.CountDocuments(ctx, query)
+
+	if err != nil {
+		return false, err
+	}
+
+	return matches != 0, nil
 }
 
 func (r *mongoRepository) Update(ctx context.Context, update *realState.RealState) (*realState.RealState, error) {

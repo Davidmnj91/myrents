@@ -7,7 +7,9 @@ import (
 	"github.com/Davidmnj91/myrents/pkg/login"
 	"github.com/Davidmnj91/myrents/pkg/logout"
 	"github.com/Davidmnj91/myrents/pkg/middleware"
+	"github.com/Davidmnj91/myrents/pkg/real_state_register"
 	"github.com/Davidmnj91/myrents/pkg/storage/auth/redis"
+	"github.com/Davidmnj91/myrents/pkg/storage/real_state"
 	user "github.com/Davidmnj91/myrents/pkg/storage/user/mongo"
 	"github.com/Davidmnj91/myrents/pkg/user_profile"
 	"github.com/Davidmnj91/myrents/pkg/user_register"
@@ -67,7 +69,7 @@ func main() {
 	dbPort := env.GetEnvAsStringOrFallback("DB_PORT", defaultDBPort)
 	schema := env.GetEnvAsStringOrFallback("DB_SCHEMA", defaultDBSchema)
 
-	dbClient, err := mongoUtil.ConnectMongo(mongoUtil.NewMongoConfiguration(
+	userDBClient, err := mongoUtil.ConnectMongo(mongoUtil.NewMongoConfiguration(
 		dbUser,
 		dbPass,
 		dbHost,
@@ -80,33 +82,50 @@ func main() {
 		panic(err)
 	}
 
+	realStateDBClient, err := mongoUtil.ConnectMongo(mongoUtil.NewMongoConfiguration(
+		dbUser,
+		dbPass,
+		dbHost,
+		dbPort,
+		schema,
+		"real_state",
+	))
+
+	if err != nil {
+		panic(err)
+	}
+
 	validator, err := validation.NewValidator()
 	if err != nil {
 		panic(err)
 	}
 
-	repo := user.NewRepository(dbClient)
+	userRepo := user.NewRepository(userDBClient)
+	realStateRepo := real_state.NewRepository(realStateDBClient)
 	redisRepo := redis.NewRepository(redisClient, int64(tokenTtl))
 
 	jwtService := jwt.NewService(tokenSeed, tokenTtl)
 	authService := middleware.NewService(jwtService, redis.NewRepository(redisClient, int64(tokenTtl)))
 
 	authMiddleware := middleware.NewAuthMiddleware(authService)
-	loginHandler := login.NewLogin(validator, repo, redisRepo, jwtService)
+	loginHandler := login.NewLogin(validator, userRepo, redisRepo, jwtService)
 	logoutHandler := logout.NewLogout(redisRepo)
 
-	userRegisterHandler := user_register.NewRegister(repo, validator)
-	userDeleteHandler := user_remove.NewReMove(repo)
+	userRegisterHandler := user_register.NewRegister(userRepo, validator)
+	userDeleteHandler := user_remove.NewReMove(userRepo)
 
-	userProfileHandler := user_profile.NewProfile(repo)
+	userProfileHandler := user_profile.NewProfile(userRepo)
+
+	realStateRegister := real_state_register.NewRealStateRegister(realStateRepo, validator)
 
 	router := rest.NewRouter(rest.Routes{
-		LoginHandler:        loginHandler,
-		LogoutHandler:       logoutHandler,
-		UserRegisterHandler: userRegisterHandler,
-		UserDeleteHandler:   userDeleteHandler,
-		UserProfileHandler:  userProfileHandler,
-		AuthMiddleware:      authMiddleware,
+		LoginHandler:             loginHandler,
+		LogoutHandler:            logoutHandler,
+		UserRegisterHandler:      userRegisterHandler,
+		UserDeleteHandler:        userDeleteHandler,
+		UserProfileHandler:       userProfileHandler,
+		RealStateRegisterHandler: realStateRegister,
+		AuthMiddleware:           authMiddleware,
 	})
 
 	apiPort, err := env.GetEnvAsIntOrFallback("API_PORT", defaultApiPort)

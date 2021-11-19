@@ -7,6 +7,7 @@ import (
 
 type RealState struct {
 	RealStateUUID domain.UUID
+	LandReference string
 	Street        string
 	ZipCode       string
 	Province      string
@@ -14,7 +15,7 @@ type RealState struct {
 	Gateway       string
 	Floor         string
 	Door          string
-	SqMeters      float32
+	SqMeters      string
 	Landlord      domain.UUID
 	CreatedAt     time.Time
 	UpdatedAt     time.Time

@@ -60,57 +60,69 @@ definitions:
     x-go-package: github.com/Davidmnj91/myrents/pkg/user_profile
   Register:
     properties:
-      birth_date:
-        description: The BirthDate of the user
-        example: "2000-12-12"
+      country:
+        description: The country of the real state address
+        example: Spain
         type: string
-        x-go-name: BirthDate
-      email:
-        description: The Email of the user
-        example: myemail@me.com
+        x-go-name: Country
+      door:
+        description: The Door of the real state address
+        example: 2Iz
         type: string
-        x-go-name: Email
-      id_number:
-        description: The IDNumber of the user
-        example: 01234567-N
+        x-go-name: Door
+      gateway:
+        description: The gateway of the real state address
+        example: 19Bis
         type: string
-        x-go-name: IDNumber
-      name:
-        description: The Name of the user
-        example: David
+        x-go-name: Gateway
+      land_reference:
+        description: The owner of the real state uuid
+        example: 1234-5678-9012-3456
         type: string
-        x-go-name: Name
-      password:
-        description: The Password of the user
-        example: mySecretPassword
+        x-go-name: LandReference
+      landlord:
+        description: The owner's uuid of the real state
+        example: 1234-5678-9012-3456
         type: string
-        x-go-name: Password
-      phone:
-        description: The Phone of the user
-        example: "666000222"
+        x-go-name: Landlord
+      province:
+        description: The province of the real state address
+        example: Madrid
         type: string
-        x-go-name: Phone
-      surname:
-        description: The Surname of the user
-        example: Sanchez
+        x-go-name: Province
+      sq_meters:
+        description: The Size of the real state
+        example: "120"
         type: string
-        x-go-name: Surname
-      username:
-        description: The name of the user in the app
-        example: myUserName
+        x-go-name: SqMeters
+      street:
+        description: The street of the real state address
+        example: C/ False
         type: string
-        x-go-name: Username
+        x-go-name: Street
+      zip_code:
+        description: The zip code of the real state address
+        example: "057890"
+        type: string
+        x-go-name: ZipCode
     required:
-    - username
-    - password
-    - name
-    - surname
-    - id_number
-    - email
-    - phone
-    - birth_date
+      - username
+      - password
+      - name
+      - surname
+      - id_number
+      - email
+      - phone
+      - birth_date
+      - land_reference
+      - street
+      - zip_code
+      - province
+      - country
+      - gateway
+      - landlord
     type: object
-    x-go-package: github.com/Davidmnj91/myrents/pkg/user_register
+    x-go-package: github.com/Davidmnj91/myrents/pkg/real_state_register
 host: localhost:5000
 info:
   description: Documentation of our MyRents API.
@@ -160,21 +172,39 @@ paths:
         "500":
           description: Internal server error
       security:
-      - loggedIn:
-        - '[]'
+        - loggedIn:
+            - '[]'
       summary: Returns the authenticated user's profile.
       tags:
-      - user
+        - user
+  /real-state/register:
+    post:
+      operationId: register-real-state
+      parameters:
+        - description: Body to register a new real state
+          in: body
+          name: Body
+          required: true
+          schema:
+            $ref: '#/definitions/Register'
+      responses:
+        "200":
+          description: Successful registration
+        "500":
+          description: Internal server error
+      summary: Creates a new real state for the owner in the system.
+      tags:
+        - realState
   /register:
     post:
       operationId: register-user
       parameters:
-      - description: Body to register a user
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/Register'
+        - description: Body to register a user
+          in: body
+          name: Body
+          required: true
+          schema:
+            $ref: '#/definitions/Register'
       responses:
         "200":
           description: Successful registration
