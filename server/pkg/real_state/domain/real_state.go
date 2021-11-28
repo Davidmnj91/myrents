@@ -27,6 +27,10 @@ func (u *RealState) Create() {
 	u.UpdatedAt = time.Now()
 }
 
+func (u *RealState) Update() {
+	u.UpdatedAt = time.Now()
+}
+
 func (u *RealState) Delete() {
 	u.DeletedAt = time.Now()
 }
