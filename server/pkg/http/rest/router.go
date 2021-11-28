@@ -5,6 +5,7 @@ import (
 	"github.com/Davidmnj91/myrents/pkg/auth/logout"
 	"github.com/Davidmnj91/myrents/pkg/auth/middleware"
 	"github.com/Davidmnj91/myrents/pkg/real_state/real_state_register"
+	"github.com/Davidmnj91/myrents/pkg/real_state/real_state_remove"
 	"github.com/Davidmnj91/myrents/pkg/real_state/real_state_update"
 	"github.com/Davidmnj91/myrents/pkg/user/user_profile"
 	"github.com/Davidmnj91/myrents/pkg/user/user_register"
@@ -25,6 +26,7 @@ type router struct {
 
 	realStateRegisterHandler real_state_register.Handler
 	realStateUpdaterHandler  real_state_update.Handler
+	realStateRemoverHandler  real_state_remove.Handler
 
 	authMiddleware middleware.Middleware
 }
@@ -38,6 +40,7 @@ type Routes struct {
 
 	RealStateRegisterHandler real_state_register.Handler
 	RealStateUpdaterHandler  real_state_update.Handler
+	RealStateRemoverHandler  real_state_remove.Handler
 
 	AuthMiddleware middleware.Middleware
 }
@@ -51,6 +54,7 @@ func NewRouter(routes Routes) Router {
 		userProfileHandler:       routes.UserProfileHandler,
 		realStateRegisterHandler: routes.RealStateRegisterHandler,
 		realStateUpdaterHandler:  routes.RealStateUpdaterHandler,
+		realStateRemoverHandler:  routes.RealStateRemoverHandler,
 		authMiddleware:           routes.AuthMiddleware,
 	}
 }
@@ -66,4 +70,5 @@ func (r *router) Serve(group fiber.Router) {
 
 	group.Post("/real-state/register", r.authMiddleware.CheckAuth(), r.realStateRegisterHandler.Register)
 	group.Put("/real-state/:landReference", r.authMiddleware.CheckAuth(), r.realStateUpdaterHandler.Update)
+	group.Delete("/real-state/:landReference", r.authMiddleware.CheckAuth(), r.realStateRemoverHandler.Remove)
 }

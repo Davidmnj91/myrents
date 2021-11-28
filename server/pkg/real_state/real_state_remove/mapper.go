@@ -1,4 +1,4 @@
-package real_state_update
+package real_state_remove
 
 import (
 	"github.com/Davidmnj91/myrents/pkg/real_state/domain"
@@ -6,17 +6,16 @@ import (
 )
 
 type Mapper interface {
-	ToDomain(landReference string, landlord string, update Update) *domain.RealState
+	ToDomain(landReference string, landlord string) *domain.RealState
 }
 
-func ToDomain(landReference string, landlord string, update Update) *domain.RealState {
+func ToDomain(landReference string, landlord string) *domain.RealState {
 	landLordUuid, err := uuid.Parse(landlord)
 	if err != nil {
 	}
 
 	return &domain.RealState{
 		LandReference: landReference,
-		SqMeters:      update.SqMeters,
 		Landlord:      landLordUuid,
 	}
 }

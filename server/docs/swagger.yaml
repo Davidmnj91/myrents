@@ -170,6 +170,16 @@ definitions:
     type: object
     x-go-name: Register
     x-go-package: github.com/Davidmnj91/myrents/pkg/user/user_register
+  UpdateRealState:
+    properties:
+      sq_meters:
+        description: The Size of the real state
+        example: "120"
+        type: string
+        x-go-name: SqMeters
+    type: object
+    x-go-name: Update
+    x-go-package: github.com/Davidmnj91/myrents/pkg/real_state/real_state_update
 host: localhost:5000
 info:
   description: Documentation of our MyRents API.
@@ -224,6 +234,51 @@ paths:
       summary: Returns the authenticated user's profile.
       tags:
         - user
+  /real-state/:landReference:
+    delete:
+      operationId: remove-real-state
+      parameters:
+        - description: LandReference of the to be removed real state
+          in: path
+          name: LandReference
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Successful remove
+        "500":
+          description: Internal server error
+      security:
+        - loggedIn:
+            - '[]'
+      summary: Deletes the given real state for the owner in the system.
+      tags:
+        - realState
+    put:
+      operationId: update-real-state
+      parameters:
+        - description: LandReference of the to be updated real state
+          in: path
+          name: LandReference
+          required: true
+          type: string
+        - description: Body to update a new real state
+          in: body
+          name: Body
+          required: true
+          schema:
+            $ref: '#/definitions/UpdateRealState'
+      responses:
+        "200":
+          description: Successful update
+        "500":
+          description: Internal server error
+      security:
+        - loggedIn:
+            - '[]'
+      summary: Updates the given real state for the owner in the system.
+      tags:
+        - realState
   /real-state/register:
     post:
       operationId: register-real-state

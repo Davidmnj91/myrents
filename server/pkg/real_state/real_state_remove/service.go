@@ -1,4 +1,4 @@
-package real_state_update
+package real_state_remove
 
 import (
 	"context"
@@ -8,18 +8,18 @@ import (
 )
 
 type Service interface {
-	Update(ctx context.Context, realState *domain.RealState) error
+	Remove(ctx context.Context, realState *domain.RealState) error
 }
 
-type registerService struct {
+type removerService struct {
 	repo domain.Repository
 }
 
 func NewService(repo domain.Repository) Service {
-	return &registerService{repo}
+	return &removerService{repo}
 }
 
-func (s *registerService) Update(ctx context.Context, realState *domain.RealState) error {
+func (s *removerService) Remove(ctx context.Context, realState *domain.RealState) error {
 	found, err := s.repo.FindByLandReference(ctx, realState.LandReference)
 
 	if err != nil {
@@ -34,7 +34,7 @@ func (s *registerService) Update(ctx context.Context, realState *domain.RealStat
 		return errors.New(ErrRealStateNotBelongToUser)
 	}
 
-	realState.Update()
+	realState.Delete()
 
 	_, err = s.repo.Update(ctx, realState)
 

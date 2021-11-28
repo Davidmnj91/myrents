@@ -1,4 +1,4 @@
-package real_state_update
+package real_state_remove
 
 const (
 	ErrRealStateNotExists       = "real state does not exists"
