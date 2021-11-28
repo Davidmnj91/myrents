@@ -109,13 +109,16 @@ func (r *mongoRepository) Update(ctx context.Context, update *domain.RealState) 
 	toUpdate := ToRepository(update)
 
 	query := bson.M{"$set": bson.M{
-		"street":    toUpdate.Street,
-		"zip_code":  toUpdate.ZipCode,
-		"province":  toUpdate.Province,
-		"country":   toUpdate.Country,
-		"gateway":   toUpdate.Gateway,
-		"door":      toUpdate.Door,
-		"sq_meters": toUpdate.SqMeters,
+		"street":     toUpdate.Street,
+		"zip_code":   toUpdate.ZipCode,
+		"province":   toUpdate.Province,
+		"country":    toUpdate.Country,
+		"gateway":    toUpdate.Gateway,
+		"door":       toUpdate.Door,
+		"sq_meters":  toUpdate.SqMeters,
+		"created_at": toUpdate.CreatedAt,
+		"updated_at": toUpdate.UpdatedAt,
+		"deleted_at": toUpdate.DeletedAt,
 	}}
 
 	updated, err := r.db.UpdateByID(ctx, update.RealStateUUID.String(), query)

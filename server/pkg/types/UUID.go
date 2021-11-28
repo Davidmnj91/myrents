@@ -14,3 +14,7 @@ func Parse(str string) (UUID, error) {
 
 	return UUID{parse}, err
 }
+
+func (u *UUID) Equals(uuid UUID) bool {
+	return u.UUID.String() == uuid.UUID.String()
+}

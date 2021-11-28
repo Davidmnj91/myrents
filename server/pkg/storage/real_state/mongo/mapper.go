@@ -7,7 +7,7 @@ import (
 
 func ToDomain(realState RealStateStorage) *domain.RealState {
 	uuid, _ := types.Parse(realState.ID)
-	landlordUuid, _ := types.Parse(realState.ID)
+	landlordUuid, _ := types.Parse(realState.Landlord)
 
 	return &domain.RealState{
 		RealStateUUID: uuid,

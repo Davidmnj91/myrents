@@ -34,9 +34,9 @@ func (s *registerService) Update(ctx context.Context, realState *domain.RealStat
 		return errors.New(ErrRealStateNotBelongToUser)
 	}
 
-	realState.Update()
+	found.Update(*realState)
 
-	_, err = s.repo.Update(ctx, realState)
+	_, err = s.repo.Update(ctx, found)
 
 	if err != nil {
 		return errors.New(fmt.Sprintf("Internal App error: %s", err))

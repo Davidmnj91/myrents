@@ -22,8 +22,8 @@ type RealState struct {
 	DeletedAt     time.Time
 }
 
-func (u RealState) IsOwnedBy(landlord types.UUID) bool {
-	return u.Landlord == landlord
+func (u *RealState) IsOwnedBy(landlord types.UUID) bool {
+	return u.Landlord.Equals(landlord)
 }
 
 func (u *RealState) Create() {
@@ -31,7 +31,8 @@ func (u *RealState) Create() {
 	u.UpdatedAt = time.Now()
 }
 
-func (u *RealState) Update() {
+func (u *RealState) Update(state RealState) {
+	u.SqMeters = state.SqMeters
 	u.UpdatedAt = time.Now()
 }
 

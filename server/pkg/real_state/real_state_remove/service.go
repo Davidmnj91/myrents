@@ -34,9 +34,9 @@ func (s *removerService) Remove(ctx context.Context, realState *domain.RealState
 		return errors.New(ErrRealStateNotBelongToUser)
 	}
 
-	realState.Delete()
+	found.Delete()
 
-	_, err = s.repo.Update(ctx, realState)
+	_, err = s.repo.Update(ctx, found)
 
 	if err != nil {
 		return errors.New(fmt.Sprintf("Internal App error: %s", err))
