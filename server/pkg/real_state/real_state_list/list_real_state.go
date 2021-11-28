@@ -1,39 +1,35 @@
-package real_state_register
+package real_state_list
 
-// swagger:model RegisterRealState
-type Register struct {
+// swagger:model ListRealState
+type ListRealState struct {
 	// The unique official reference of the real state
 	// required: true
 	// example: 1234-5678-9012-3456
-	LandReference string `json:"land_reference" validate:"required"`
+	LandReference string `json:"land_reference"`
 	// The street of the real state address
 	// required: true
 	// example: C/ False
-	Street string `json:"street" validate:"required"`
+	Street string `json:"street"`
 	// The zip code of the real state address
 	// required: true
 	// example: 057890
-	ZipCode string `json:"zip_code" validate:"required"`
+	ZipCode string `json:"zip_code"`
 	// The province of the real state address
 	// required: true
 	// example: Madrid
-	Province string `json:"province" validate:"required"`
+	Province string `json:"province"`
 	// The country of the real state address
 	// required: true
 	// example: Spain
-	Country string `json:"country" validate:"required"`
+	Country string `json:"country"`
 	// The gateway of the real state address
 	// required: true
 	// example: 19Bis
-	Gateway string `json:"gateway" validate:"required"`
+	Gateway string `json:"gateway"`
 	// The Door of the real state address
 	// example: 2Iz
 	Door string `json:"door"`
 	// The Size of the real state
 	// example: 120
 	SqMeters string `json:"sq_meters"`
-	// The owner's uuid of the real state
-	// required: true
-	// example: 1234-5678-9012-3456
-	Landlord string `json:"landlord" validate:"required"`
 }

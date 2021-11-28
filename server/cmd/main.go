@@ -95,6 +95,7 @@ func main() {
 		UserRegisterHandler:      userModule.RegisterHandler,
 		UserDeleteHandler:        userModule.DeleteHandler,
 		UserProfileHandler:       userModule.ProfileHandler,
+		RealStateListerHandler:   realStateModule.ListerHandler,
 		RealStateRegisterHandler: realStateModule.RegisterHandler,
 		RealStateUpdaterHandler:  realStateModule.UpdaterHandler,
 		RealStateRemoverHandler:  realStateModule.RemoverHandler,

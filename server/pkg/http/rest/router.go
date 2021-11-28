@@ -4,6 +4,7 @@ import (
 	"github.com/Davidmnj91/myrents/pkg/auth/login"
 	"github.com/Davidmnj91/myrents/pkg/auth/logout"
 	"github.com/Davidmnj91/myrents/pkg/auth/middleware"
+	"github.com/Davidmnj91/myrents/pkg/real_state/real_state_list"
 	"github.com/Davidmnj91/myrents/pkg/real_state/real_state_register"
 	"github.com/Davidmnj91/myrents/pkg/real_state/real_state_remove"
 	"github.com/Davidmnj91/myrents/pkg/real_state/real_state_update"
@@ -24,6 +25,7 @@ type router struct {
 	userDeleteHandler   user_remove.Handler
 	userProfileHandler  user_profile.Handler
 
+	realStateListerHandler   real_state_list.Handler
 	realStateRegisterHandler real_state_register.Handler
 	realStateUpdaterHandler  real_state_update.Handler
 	realStateRemoverHandler  real_state_remove.Handler
@@ -38,6 +40,7 @@ type Routes struct {
 	UserDeleteHandler   user_remove.Handler
 	UserProfileHandler  user_profile.Handler
 
+	RealStateListerHandler   real_state_list.Handler
 	RealStateRegisterHandler real_state_register.Handler
 	RealStateUpdaterHandler  real_state_update.Handler
 	RealStateRemoverHandler  real_state_remove.Handler
@@ -52,6 +55,7 @@ func NewRouter(routes Routes) Router {
 		userRegisterHandler:      routes.UserRegisterHandler,
 		userDeleteHandler:        routes.UserDeleteHandler,
 		userProfileHandler:       routes.UserProfileHandler,
+		realStateListerHandler:   routes.RealStateListerHandler,
 		realStateRegisterHandler: routes.RealStateRegisterHandler,
 		realStateUpdaterHandler:  routes.RealStateUpdaterHandler,
 		realStateRemoverHandler:  routes.RealStateRemoverHandler,
@@ -68,6 +72,8 @@ func (r *router) Serve(group fiber.Router) {
 
 	group.Get("/profile", r.authMiddleware.CheckAuth(), r.userProfileHandler.Profile)
 
+	group.Get("/real-state", r.authMiddleware.CheckAuth(), r.realStateListerHandler.List)
+	group.Get("/real-state/:landReference", r.authMiddleware.CheckAuth(), r.realStateListerHandler.FindOne)
 	group.Post("/real-state/register", r.authMiddleware.CheckAuth(), r.realStateRegisterHandler.Register)
 	group.Put("/real-state/:landReference", r.authMiddleware.CheckAuth(), r.realStateUpdaterHandler.Update)
 	group.Delete("/real-state/:landReference", r.authMiddleware.CheckAuth(), r.realStateRemoverHandler.Remove)

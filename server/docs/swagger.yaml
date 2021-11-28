@@ -2,6 +2,57 @@ basePath: /api
 consumes:
 - application/json
 definitions:
+  ListRealState:
+    properties:
+      country:
+        description: The country of the real state address
+        example: Spain
+        type: string
+        x-go-name: Country
+      door:
+        description: The Door of the real state address
+        example: 2Iz
+        type: string
+        x-go-name: Door
+      gateway:
+        description: The gateway of the real state address
+        example: 19Bis
+        type: string
+        x-go-name: Gateway
+      land_reference:
+        description: The unique official reference of the real state
+        example: 1234-5678-9012-3456
+        type: string
+        x-go-name: LandReference
+      province:
+        description: The province of the real state address
+        example: Madrid
+        type: string
+        x-go-name: Province
+      sq_meters:
+        description: The Size of the real state
+        example: "120"
+        type: string
+        x-go-name: SqMeters
+      street:
+        description: The street of the real state address
+        example: C/ False
+        type: string
+        x-go-name: Street
+      zip_code:
+        description: The zip code of the real state address
+        example: "057890"
+        type: string
+        x-go-name: ZipCode
+    required:
+      - land_reference
+      - street
+      - zip_code
+      - province
+      - country
+      - gateway
+    type: object
+    x-go-package: github.com/Davidmnj91/myrents/pkg/real_state/real_state_list
   Login:
     properties:
       password:
@@ -76,7 +127,7 @@ definitions:
         type: string
         x-go-name: Gateway
       land_reference:
-        description: The owner of the real state uuid
+        description: The unique official reference of the real state
         example: 1234-5678-9012-3456
         type: string
         x-go-name: LandReference
@@ -234,6 +285,21 @@ paths:
       summary: Returns the authenticated user's profile.
       tags:
         - user
+  /real-state/:
+    get:
+      operationId: list-real-states
+      responses:
+        "200":
+          $ref: '#/responses/ListRealStates'
+          description: Successful list
+        "500":
+          description: Internal server error
+      security:
+        - loggedIn:
+            - '[]'
+      summary: Returns the existing real states for the owner in the system.
+      tags:
+        - realState
   /real-state/:landReference:
     delete:
       operationId: remove-real-state
@@ -252,6 +318,28 @@ paths:
         - loggedIn:
             - '[]'
       summary: Deletes the given real state for the owner in the system.
+      tags:
+        - realState
+    get:
+      operationId: list-real-state
+      parameters:
+        - description: LandReference of the required real state
+          in: path
+          name: LandReference
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Successful list
+          schema:
+            $ref: '#/definitions/ListRealState'
+        "500":
+          description: Internal server error
+      security:
+        - loggedIn:
+            - '[]'
+      summary: Returns the details of the searched LandReference for the owner in
+        the system.
       tags:
         - realState
     put:
@@ -335,6 +423,12 @@ paths:
 produces:
 - application/json
 responses:
+  ListRealStates:
+    description: ""
+    schema:
+      items:
+        $ref: '#/definitions/ListRealState'
+      type: array
   logged-user:
     description: Successfully logged-in user
     headers:
