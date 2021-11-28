@@ -26,8 +26,11 @@ type Register struct {
 	// required: true
 	// example: 19Bis
 	Gateway string `json:"gateway" validate:"required"`
+	// The Floor of the real state address
+	// example: 2
+	Floor string `json:"floor"`
 	// The Door of the real state address
-	// example: 2Iz
+	// example: Iz
 	Door string `json:"door"`
 	// The Size of the real state
 	// example: 120

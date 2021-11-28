@@ -15,7 +15,7 @@ type RealStateStorage struct {
 	Gateway       string    `json:"gateway" bson:"gateway"`
 	Door          string    `json:"door" bson:"door"`
 	SqMeters      string    `json:"sq_meters" bson:"sq_meters"`
-	Landlord      string    `json:"userid" bson:"userid"`
+	Landlord      string    `json:"user_id" bson:"user_id"`
 	CreatedAt     time.Time `json:"created_at" bson:"created_at"`
 	UpdatedAt     time.Time `json:"updated_at" bson:"updated_at"`
 	DeletedAt     time.Time `json:"deleted_at" bson:"deleted_at"`

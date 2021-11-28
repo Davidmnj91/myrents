@@ -60,22 +60,29 @@ func (r *mongoRepository) FindByLandReference(ctx context.Context, landReference
 }
 
 func (r *mongoRepository) FindByUserId(ctx context.Context, userUUID types.UUID) ([]domain.RealState, error) {
-	query := bson.M{"userid": userUUID}
+	query := bson.M{"user_id": userUUID.String()}
 	found, err := r.db.Find(ctx, query)
-	if err != nil {
-		return nil, err
-	}
-
-	var results []RealStateStorage
-	err = found.Decode(&results)
 	if err != nil {
 		return nil, err
 	}
 
 	var realStates []domain.RealState
 
-	for _, result := range results {
-		realStates = append(realStates, *ToDomain(result))
+	for found.Next(context.TODO()) {
+		var elem RealStateStorage
+		if err := found.Decode(&elem); err != nil {
+			return nil, err
+		}
+
+		realStates = append(realStates, *ToDomain(elem))
+	}
+
+	if err := found.Err(); err != nil {
+		return nil, err
+	}
+
+	if err := found.Close(context.TODO()); err != nil {
+		return nil, err
 	}
 
 	return realStates, nil
