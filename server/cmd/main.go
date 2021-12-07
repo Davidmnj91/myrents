@@ -103,6 +103,7 @@ func main() {
 		RealStateRegisterHandler: realStateModule.RegisterHandler,
 		RealStateUpdaterHandler:  realStateModule.UpdaterHandler,
 		RealStateRemoverHandler:  realStateModule.RemoverHandler,
+		AgreementListerHandler:   agreementModule.ListHandler,
 		AgreementCreatorHandler:  agreementModule.CreateHandler,
 		AuthMiddleware:           authModule.AuthMiddleware,
 	})

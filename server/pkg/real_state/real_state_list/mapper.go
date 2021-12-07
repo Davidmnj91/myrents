@@ -7,6 +7,7 @@ import (
 
 type Mapper interface {
 	ToDomain(landReference string, landlord string) *domain.RealState
+	ToHandler(state *domain.RealState) *ListRealState
 }
 
 func ToDomain(landlord string, landReference string) *domain.RealState {

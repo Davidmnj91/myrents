@@ -2,6 +2,7 @@ package rest
 
 import (
 	"github.com/Davidmnj91/myrents/pkg/agreement/agreement_create"
+	"github.com/Davidmnj91/myrents/pkg/agreement/agreement_list"
 	"github.com/Davidmnj91/myrents/pkg/auth/login"
 	"github.com/Davidmnj91/myrents/pkg/auth/logout"
 	"github.com/Davidmnj91/myrents/pkg/auth/middleware"
@@ -32,6 +33,7 @@ type router struct {
 	realStateRemoverHandler  real_state_remove.Handler
 
 	agreementCreatorHandler agreement_create.Handler
+	agreementListerHandler  agreement_list.Handler
 
 	authMiddleware middleware.Middleware
 }
@@ -49,6 +51,7 @@ type Routes struct {
 	RealStateRemoverHandler  real_state_remove.Handler
 
 	AgreementCreatorHandler agreement_create.Handler
+	AgreementListerHandler  agreement_list.Handler
 
 	AuthMiddleware middleware.Middleware
 }
@@ -65,6 +68,7 @@ func NewRouter(routes Routes) Router {
 		realStateUpdaterHandler:  routes.RealStateUpdaterHandler,
 		realStateRemoverHandler:  routes.RealStateRemoverHandler,
 		agreementCreatorHandler:  routes.AgreementCreatorHandler,
+		agreementListerHandler:   routes.AgreementListerHandler,
 		authMiddleware:           routes.AuthMiddleware,
 	}
 }
@@ -84,5 +88,6 @@ func (r *router) Serve(group fiber.Router) {
 	group.Put("/real-state/:landReference", r.authMiddleware.CheckAuth(), r.realStateUpdaterHandler.Update)
 	group.Delete("/real-state/:landReference", r.authMiddleware.CheckAuth(), r.realStateRemoverHandler.Remove)
 
+	group.Get("/agreement", r.authMiddleware.CheckAuth(), r.agreementListerHandler.List)
 	group.Post("/agreement", r.authMiddleware.CheckAuth(), r.agreementCreatorHandler.Create)
 }

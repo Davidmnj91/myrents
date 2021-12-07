@@ -44,6 +44,48 @@ definitions:
       - endDate
     type: object
     x-go-package: github.com/Davidmnj91/myrents/pkg/agreement/agreement_create
+  ListAgreement:
+    properties:
+      endDate:
+        description: The effective end date for the rental
+        example: "2005-12-12"
+        type: string
+        x-go-name: EndDate
+      landlord:
+        description: The IDNumber code of landlord part that rents the real state
+        example: 01234567-N
+        type: string
+        x-go-name: Landlord
+      monthlyPrice:
+        description: The monthly price of the rent
+        example: 800
+        format: float
+        type: number
+        x-go-name: MonthlyPrice
+      realState:
+        description: The unique official reference of the real state
+        example: 1234-5678-9012-3456
+        type: string
+        x-go-name: RealState
+      startDate:
+        description: The effective start date for the rental
+        example: "2000-12-12"
+        type: string
+        x-go-name: StartDate
+      tenant:
+        description: The IDNumber code of tenant part that rents the real state
+        example: 89012345-M
+        type: string
+        x-go-name: Tenant
+    required:
+      - realState
+      - landlord
+      - tenant
+      - monthlyPrice
+      - startDate
+      - endDate
+    type: object
+    x-go-package: github.com/Davidmnj91/myrents/pkg/agreement/agreement_list
   ListRealState:
     properties:
       country:
@@ -61,7 +103,7 @@ definitions:
         example: 19Bis
         type: string
         x-go-name: Gateway
-      land_reference:
+      landReference:
         description: The unique official reference of the real state
         example: 1234-5678-9012-3456
         type: string
@@ -71,7 +113,7 @@ definitions:
         example: Madrid
         type: string
         x-go-name: Province
-      sq_meters:
+      sqMeters:
         description: The Size of the real state
         example: "120"
         type: string
@@ -81,15 +123,15 @@ definitions:
         example: C/ False
         type: string
         x-go-name: Street
-      zip_code:
+      zipCode:
         description: The zip code of the real state address
         example: "057890"
         type: string
         x-go-name: ZipCode
     required:
-      - land_reference
+      - landReference
       - street
-      - zip_code
+      - zipCode
       - province
       - country
       - gateway
@@ -285,6 +327,21 @@ info:
   version: 1.0.0
 paths:
   /agreement:
+    get:
+      description: Returns the list of the registered agreements in the system for
+        a user
+      operationId: list-agreements
+      responses:
+        "200":
+          $ref: '#/responses/ListAgreements'
+          description: Successful created
+        "500":
+          description: Internal server error
+      security:
+        - loggedIn:
+            - '[]'
+      tags:
+        - Agreement
     post:
       description: Creates a new agreement over a real state in the system
       operationId: create-agreement
@@ -353,7 +410,7 @@ paths:
       summary: Returns the authenticated user's profile.
       tags:
         - User
-  /real-state/:
+  /real-state:
     get:
       operationId: list-real-states
       responses:
@@ -409,7 +466,7 @@ paths:
       summary: Returns the details of the searched LandReference for the owner in
         the system.
       tags:
-        - realState
+        - RealState
     put:
       operationId: update-real-state
       parameters:
@@ -491,6 +548,12 @@ paths:
 produces:
 - application/json
 responses:
+  ListAgreements:
+    description: ""
+    schema:
+      items:
+        $ref: '#/definitions/ListAgreement'
+      type: array
   ListRealStates:
     description: ""
     schema:

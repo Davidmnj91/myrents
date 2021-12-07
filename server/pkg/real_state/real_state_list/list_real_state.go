@@ -5,7 +5,7 @@ type ListRealState struct {
 	// The unique official reference of the real state
 	// required: true
 	// example: 1234-5678-9012-3456
-	LandReference string `json:"land_reference"`
+	LandReference string `json:"landReference"`
 	// The street of the real state address
 	// required: true
 	// example: C/ False
@@ -13,7 +13,7 @@ type ListRealState struct {
 	// The zip code of the real state address
 	// required: true
 	// example: 057890
-	ZipCode string `json:"zip_code"`
+	ZipCode string `json:"zipCode"`
 	// The province of the real state address
 	// required: true
 	// example: Madrid
@@ -31,5 +31,5 @@ type ListRealState struct {
 	Door string `json:"door"`
 	// The Size of the real state
 	// example: 120
-	SqMeters string `json:"sq_meters"`
+	SqMeters string `json:"sqMeters"`
 }
