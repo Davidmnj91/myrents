@@ -17,7 +17,7 @@ func NewHandler(service Service) Handler {
 	return &logoutHandler{service}
 }
 
-// 	Logout swagger:route DELETE /logout auth logout
+// 	Logout swagger:route DELETE /logout Auth logout
 //
 // 	Logs out a user account from the system.
 //

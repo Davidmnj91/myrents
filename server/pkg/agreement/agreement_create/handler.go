@@ -1,4 +1,4 @@
-package real_state_register
+package agreement_create
 
 import (
 	"github.com/Davidmnj91/myrents/pkg/util/validation"
@@ -6,56 +6,56 @@ import (
 )
 
 type Handler interface {
-	Register(ctx *fiber.Ctx) error
+	Create(ctx *fiber.Ctx) error
 }
 
-type registerHandler struct {
+type createHandler struct {
 	service   Service
 	validator validation.Validator
 }
 
 func NewHandler(service Service, validator validation.Validator) Handler {
-	return &registerHandler{service, validator}
+	return &createHandler{service, validator}
 }
 
-// 	swagger:parameters register-real-state
+// 	swagger:parameters create-agreement
 type RequestWrapper struct {
-	// 	Body to register a new real state
+	// 	Body to create a new agreement
 	// 	in:body
 	// 	required: true
-	Body Register
+	Body CreateAgreement
 }
 
-// 	Register swagger:route POST /real-state/register RealState register-real-state
+// 	Create swagger:route POST /agreement Agreement create-agreement
 //
-// 	Creates a new real state for the owner in the system.
+// 	Creates a new agreement over a real state in the system
 //
 // 	Security:
 //		loggedIn: []
 //
 // 	Responses:
-// 		200: description:Successful registration
+// 		200: description:Successful created
 // 		500: description:Internal server error
-func (h *registerHandler) Register(ctx *fiber.Ctx) error {
+func (h *createHandler) Create(ctx *fiber.Ctx) error {
 	landlord := ctx.Get("user")
-	reqRealState := &Register{}
+	reqAgreement := &CreateAgreement{}
 
-	if err := ctx.BodyParser(reqRealState); err != nil {
+	if err := ctx.BodyParser(reqAgreement); err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(
 			fiber.Map{
 				"message": err.Error(),
 			})
 	}
 
-	reqRealState.Landlord = landlord
+	reqAgreement.Landlord = landlord
 
-	if err := h.validator.ValidateStruct(*reqRealState); err != nil {
+	if err := h.validator.ValidateStruct(*reqAgreement); err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(err)
 	}
 
-	realState := ToDomain(*reqRealState)
+	agreement := ToDomain(*reqAgreement)
 
-	err := h.service.Register(ctx.Context(), realState)
+	err := h.service.Create(ctx.Context(), agreement)
 	if err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(err)
 	}

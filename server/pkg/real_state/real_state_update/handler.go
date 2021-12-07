@@ -31,7 +31,7 @@ type RequestWrapper struct {
 	Body Update
 }
 
-// 	Register swagger:route PUT /real-state/:landReference realState update-real-state
+// 	Update swagger:route PUT /real-state/:landReference RealState update-real-state
 //
 // 	Updates the given real state for the owner in the system.
 //

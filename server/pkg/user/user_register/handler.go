@@ -26,7 +26,7 @@ type RequestWrapper struct {
 	Body Register
 }
 
-// 	Register swagger:route POST /register user register-user
+// 	Register swagger:route POST /register User register-user
 //
 // 	Creates a new user in the system.
 //

@@ -2,9 +2,11 @@ package main
 
 import (
 	"fmt"
+	"github.com/Davidmnj91/myrents/pkg/agreement"
 	"github.com/Davidmnj91/myrents/pkg/auth"
 	"github.com/Davidmnj91/myrents/pkg/http/rest"
 	"github.com/Davidmnj91/myrents/pkg/real_state"
+	agreementRepository "github.com/Davidmnj91/myrents/pkg/storage/agreement/mongo"
 	"github.com/Davidmnj91/myrents/pkg/storage/auth/redis"
 	realStateRepository "github.com/Davidmnj91/myrents/pkg/storage/real_state/mongo"
 	userRepository "github.com/Davidmnj91/myrents/pkg/storage/user/mongo"
@@ -83,11 +85,13 @@ func main() {
 
 	userRepo := userRepository.NewRepository(dbClient)
 	realStateRepo := realStateRepository.NewRepository(dbClient)
+	agreementRepo := agreementRepository.NewRepository(dbClient)
 	redisRepo := redis.NewRepository(redisClient, int64(tokenTtl))
 
 	authModule := auth.NewAuthModule(tokenSeed, int64(tokenTtl), redisRepo, userRepo, validator)
 	userModule := user.NewUserModule(userRepo, validator)
 	realStateModule := real_state.NewRealStateModule(realStateRepo, validator)
+	agreementModule := agreement.NewAgreementModule(agreementRepo, realStateRepo, validator)
 
 	router := rest.NewRouter(rest.Routes{
 		LoginHandler:             authModule.LoginHandler,
@@ -99,6 +103,7 @@ func main() {
 		RealStateRegisterHandler: realStateModule.RegisterHandler,
 		RealStateUpdaterHandler:  realStateModule.UpdaterHandler,
 		RealStateRemoverHandler:  realStateModule.RemoverHandler,
+		AgreementCreatorHandler:  agreementModule.CreateHandler,
 		AuthMiddleware:           authModule.AuthMiddleware,
 	})
 

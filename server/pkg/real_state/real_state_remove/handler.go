@@ -24,7 +24,7 @@ type RequestWrapper struct {
 	LandReference string
 }
 
-// 	Register swagger:route DELETE /real-state/:landReference realState remove-real-state
+// 	Remove swagger:route DELETE /real-state/:landReference RealState remove-real-state
 //
 // 	Deletes the given real state for the owner in the system.
 //

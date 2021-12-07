@@ -33,7 +33,7 @@ type ResponseWrapper struct {
 	Authorization string
 }
 
-// 	Login swagger:route POST /login auth login-user
+// 	Login swagger:route POST /login Auth login-user
 //
 // 	Logs in a user account into the system.
 //

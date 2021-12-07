@@ -17,7 +17,7 @@ func NewHandler(service Service) Handler {
 	return &profileHandler{service}
 }
 
-// 	Profile swagger:route GET /profile user profile-user
+// 	Profile swagger:route GET /profile User profile-user
 //
 // 	Returns the authenticated user's profile.
 //

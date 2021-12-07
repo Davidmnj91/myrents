@@ -17,7 +17,7 @@ func NewHandler(service Service) Handler {
 	return &removeHandler{service}
 }
 
-// 	RemoveAccount swagger:route DELETE /removeAccount user remove-account
+// 	RemoveAccount swagger:route DELETE /removeAccount User remove-account
 //
 // 	Deletes an existing account on the system.
 //

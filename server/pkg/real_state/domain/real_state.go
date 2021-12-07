@@ -22,20 +22,20 @@ type RealState struct {
 	DeletedAt     time.Time
 }
 
-func (u *RealState) IsOwnedBy(landlord types.UUID) bool {
-	return u.Landlord.Equals(landlord)
+func (s *RealState) IsOwnedBy(landlord types.UUID) bool {
+	return s.Landlord.Equals(landlord)
 }
 
-func (u *RealState) Create() {
-	u.CreatedAt = time.Now()
-	u.UpdatedAt = time.Now()
+func (s *RealState) Create() {
+	s.CreatedAt = time.Now()
+	s.UpdatedAt = time.Now()
 }
 
-func (u *RealState) Update(state RealState) {
-	u.SqMeters = state.SqMeters
-	u.UpdatedAt = time.Now()
+func (s *RealState) Update(state RealState) {
+	s.SqMeters = state.SqMeters
+	s.UpdatedAt = time.Now()
 }
 
-func (u *RealState) Delete() {
-	u.DeletedAt = time.Now()
+func (s *RealState) Delete() {
+	s.DeletedAt = time.Now()
 }

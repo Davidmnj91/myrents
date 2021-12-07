@@ -2,6 +2,48 @@ basePath: /api
 consumes:
 - application/json
 definitions:
+  CreateAgreement:
+    properties:
+      endDate:
+        description: The effective end date for the rental
+        example: "2005-12-12"
+        type: string
+        x-go-name: EndDate
+      landlord:
+        description: The IDNumber code of landlord part that rents the real state
+        example: 01234567-N
+        type: string
+        x-go-name: Landlord
+      monthlyPrice:
+        description: The monthly price of the rent
+        example: 800
+        format: float
+        type: number
+        x-go-name: MonthlyPrice
+      realState:
+        description: The unique official reference of the real state
+        example: 1234-5678-9012-3456
+        type: string
+        x-go-name: RealState
+      startDate:
+        description: The effective start date for the rental
+        example: "2000-12-12"
+        type: string
+        x-go-name: StartDate
+      tenant:
+        description: The IDNumber code of tenant part that rents the real state
+        example: 89012345-M
+        type: string
+        x-go-name: Tenant
+    required:
+      - realState
+      - landlord
+      - tenant
+      - monthlyPrice
+      - startDate
+      - endDate
+    type: object
+    x-go-package: github.com/Davidmnj91/myrents/pkg/agreement/agreement_create
   ListRealState:
     properties:
       country:
@@ -242,16 +284,37 @@ info:
   title: MyRents
   version: 1.0.0
 paths:
+  /agreement:
+    post:
+      description: Creates a new agreement over a real state in the system
+      operationId: create-agreement
+      parameters:
+        - description: Body to create a new agreement
+          in: body
+          name: Body
+          required: true
+          schema:
+            $ref: '#/definitions/CreateAgreement'
+      responses:
+        "200":
+          description: Successful created
+        "500":
+          description: Internal server error
+      security:
+        - loggedIn:
+            - '[]'
+      tags:
+        - Agreement
   /login:
     post:
       operationId: login-user
       parameters:
-      - description: Body to log in a user
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/Login'
+        - description: Body to log in a user
+          in: body
+          name: Body
+          required: true
+          schema:
+            $ref: '#/definitions/Login'
       responses:
         "200":
           $ref: '#/responses/logged-user'
@@ -259,7 +322,7 @@ paths:
           description: Internal server error
       summary: Logs in a user account into the system.
       tags:
-      - auth
+        - Auth
   /logout:
     delete:
       operationId: logout
@@ -273,7 +336,7 @@ paths:
         - '[]'
       summary: Logs out a user account from the system.
       tags:
-      - auth
+        - Auth
   /profile:
     get:
       operationId: profile-user
@@ -289,7 +352,7 @@ paths:
             - '[]'
       summary: Returns the authenticated user's profile.
       tags:
-        - user
+        - User
   /real-state/:
     get:
       operationId: list-real-states
@@ -304,7 +367,7 @@ paths:
             - '[]'
       summary: Returns the existing real states for the owner in the system.
       tags:
-        - realState
+        - RealState
   /real-state/:landReference:
     delete:
       operationId: remove-real-state
@@ -324,7 +387,7 @@ paths:
             - '[]'
       summary: Deletes the given real state for the owner in the system.
       tags:
-        - realState
+        - RealState
     get:
       operationId: list-real-state
       parameters:
@@ -371,7 +434,7 @@ paths:
             - '[]'
       summary: Updates the given real state for the owner in the system.
       tags:
-        - realState
+        - RealState
   /real-state/register:
     post:
       operationId: register-real-state
@@ -392,7 +455,7 @@ paths:
             - '[]'
       summary: Creates a new real state for the owner in the system.
       tags:
-        - realState
+        - RealState
   /register:
     post:
       operationId: register-user
@@ -410,7 +473,7 @@ paths:
           description: Internal server error
       summary: Creates a new user in the system.
       tags:
-      - user
+        - User
   /removeAccount:
     delete:
       operationId: remove-account
@@ -424,7 +487,7 @@ paths:
         - '[]'
       summary: Deletes an existing account on the system.
       tags:
-      - user
+        - User
 produces:
 - application/json
 responses:

@@ -59,7 +59,7 @@ func (h *listHandler) FindOne(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(response)
 }
 
-// 	Register swagger:route GET /real-state/ realState list-real-states
+// 	List swagger:route GET /real-state/ RealState list-real-states
 //
 // 	Returns the existing real states for the owner in the system.
 //

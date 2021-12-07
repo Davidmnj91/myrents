@@ -6,7 +6,7 @@ import (
 )
 
 func ToDomain(person Person) *domain.User {
-	birthDate, _ := domain.NewBirthDate(person.BirthDate)
+	birthDate, _ := types.NewDate(person.BirthDate)
 	uuid, _ := types.Parse(person.ID)
 
 	return &domain.User{

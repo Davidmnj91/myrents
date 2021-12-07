@@ -1,6 +1,7 @@
 package user_register
 
 import (
+	"github.com/Davidmnj91/myrents/pkg/types"
 	"github.com/Davidmnj91/myrents/pkg/user/domain"
 )
 
@@ -9,10 +10,7 @@ type Mapper interface {
 }
 
 func ToDomain(register Register) *domain.User {
-	birthDate, err := domain.NewBirthDate(register.BirthDate)
-	if err != nil {
-
-	}
+	birthDate, _ := types.NewDate(register.BirthDate)
 
 	return &domain.User{
 		Username:  register.Username,
